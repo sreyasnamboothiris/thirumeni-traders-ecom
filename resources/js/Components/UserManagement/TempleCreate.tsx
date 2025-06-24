@@ -3,8 +3,6 @@ import Button from "@/ui/button/Button";
 import CardHeader from "@/ui/Card/CardHeader";
 import Input from "@/ui/form/Input";
 import { CardContent } from "../ui/card";
-import SelectList from "@/ui/form/SelectList";
-import InputLabel from "../InputLabel copy";
 import TextArea from "@/ui/form/TextArea";
 import StrongText from "@/typography/StrongText";
 

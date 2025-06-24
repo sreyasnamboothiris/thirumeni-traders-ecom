@@ -3,7 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TempleRequest;
+use App\Models\MalayalamMonth;
+use App\Models\MalayalamStar;
+use App\Models\Role;
+use App\Models\Temple;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class TempleController extends Controller
 {
@@ -17,13 +25,26 @@ class TempleController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $stars = MalayalamStar::all();
+        $roles = Role::all();
+        $months = MalayalamMonth::all();
+        return Inertia::render('Admin/UserManagement/UserCreate', [
+            'user_type' => 'temple',
+            'stars' => $stars,
+            'roles' => $roles,
+            'months' => $months
+        ]);
+    }
+
     public function store(TempleRequest $request)
     {
         $templeRoleId = Role::where('slug', 'temple')->value('id');
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email ?? uniqid().'@temple.local',
+            'email' => $request->email ?? uniqid() . '@temple.local',
             'password' => Hash::make('password'),
             'role_id' => $templeRoleId,
         ]);
