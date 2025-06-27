@@ -16,7 +16,15 @@ function UserCreate({ user_type, stars, roles, months }: Props) {
         <AnalyticsDashboardLayout type="data" subtype="data-tables">
             <DashboardPadding>
                 <CardHeader title="User Create" />
-                <div>{user_type === "temple" && <TempleCreate />}</div>
+                <div>
+                    {user_type === "temple" && (
+                        <TempleCreate
+                            stars={stars}
+                            months={months}
+                            roles={roles}
+                        />
+                    )}
+                </div>
             </DashboardPadding>
         </AnalyticsDashboardLayout>
     );

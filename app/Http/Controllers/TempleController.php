@@ -19,9 +19,9 @@ class TempleController extends Controller
     {
         $temples = Temple::with('user')->latest()->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $temples
+        return Inertia::render('Admin/UserManagement/UserIndex', [
+            'user_type' => 'temple',
+            'users' => $temples,
         ]);
     }
 
