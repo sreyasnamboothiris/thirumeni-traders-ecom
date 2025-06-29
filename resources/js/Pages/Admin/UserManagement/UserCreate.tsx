@@ -8,10 +8,10 @@ interface Props {
     stars: any;
     months: any;
     roles: any;
+    user: any;
 }
 
-function UserCreate({ user_type, stars, roles, months }: Props) {
-    console.log(stars, months, roles);
+function UserCreate({ user_type, stars, roles, months, user }: Props) {
     return (
         <AnalyticsDashboardLayout type="data" subtype="data-tables">
             <DashboardPadding>
@@ -22,6 +22,7 @@ function UserCreate({ user_type, stars, roles, months }: Props) {
                             stars={stars}
                             months={months}
                             roles={roles}
+                            user={user}
                         />
                     )}
                 </div>

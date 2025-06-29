@@ -1,24 +1,22 @@
 import ListResourcePage from "@/Components/ListingPage/ListResourcePage";
 import { route } from "ziggy-js";
-export default function UserIndex({ user_type }: { user_type: string }) {
-    const rows = [
-        {
-            id: 1,
-            name: "Sreejith K",
-            email: "sreejith@example.com",
-            role: "temple",
-            created_at: "2024-05-01",
-            actions: [],
-        },
-        {
-            id: 2,
-            name: "Anjana M",
-            email: "anjana@example.com",
-            role: "temple",
-            created_at: "2024-05-10",
-            actions: [],
-        },
-    ];
+import { router } from "@inertiajs/react";
+
+export default function UserIndex({
+    user_type,
+    users,
+}: {
+    user_type: string;
+    users: any[];
+}) {
+    const rows = users.map((user: any) => ({
+        id: user.id,
+        name: user.name,
+        email: user.user?.email ?? "N/A",
+        role: user.user?.role ?? "N/A",
+        created_at: user.created_at ?? "N/A",
+        actions: [],
+    }));
 
     const keys = [
         { key: "name", label: "Name", isCardHeader: true },
@@ -26,21 +24,6 @@ export default function UserIndex({ user_type }: { user_type: string }) {
         { key: "role", label: "Role", isShownInCard: true },
         { key: "created_at", label: "Created At", isShownInCard: true },
     ];
-
-    const page_list = {
-        current_page: 1,
-        per_page: 10,
-        total: 2,
-        from: 1,
-        to: 2,
-        last_page: 1,
-        links: [],
-    };
-
-    const formData = {
-        name: "",
-        email: "",
-    };
 
     const formItems = {
         name: {
@@ -57,8 +40,17 @@ export default function UserIndex({ user_type }: { user_type: string }) {
         },
     };
 
-    const onCardClick = (id: string | number) => {
-        console.log("Clicked user:", id);
+    const formData = {
+        name: "",
+        email: "",
+    };
+
+    const onCardClick = (id: number | string) => {
+        router.get(route("temple.show", id));
+    };
+
+    const onEditClick = (id: number) => {
+        router.get(route("temple.edit", id));
     };
 
     return (
@@ -66,17 +58,20 @@ export default function UserIndex({ user_type }: { user_type: string }) {
             <ListResourcePage
                 rows={rows}
                 keys={keys}
-                primaryKey={"id"}
+                primaryKey="id"
                 title="Users"
                 addUrl={route("temple.create")}
-                paginator={page_list}
                 formItems={formItems}
                 formData={formData}
+                handleCardClick={onCardClick}
+                onEditClick={(e, row) => {
+                    e.preventDefault();
+                    onEditClick(row.id);
+                }}
                 type="definitions"
                 subtype="user-management"
                 cardStyles="p-4"
                 subheading="Users registered in the system"
-                handleCardClick={onCardClick}
             />
         </div>
     );

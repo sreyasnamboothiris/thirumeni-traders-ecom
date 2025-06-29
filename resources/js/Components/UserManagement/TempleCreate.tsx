@@ -7,48 +7,57 @@ import TextArea from "@/ui/form/TextArea";
 import StrongText from "@/typography/StrongText";
 import DatePicker from "@/ui/form/DatePicker";
 import SelectList from "@/ui/form/SelectList";
+import useInertiaPost from "@/hooks/useInertiaPost";
+import { route } from "ziggy-js";
 
 export default function TempleCreate({
     stars,
     months,
     roles,
+    user,
 }: {
     stars: any;
     months: any;
     roles: any;
+    user: any;
 }) {
+    console.log(user);
     const { formData, setFormValue } = useCustomForm({
-        temple_name: "",
-        user_name: "",
-        email: "",
+        name: user?.name ?? "",
+        username: user?.user?.username ?? "",
+        email: user?.user?.email ?? "",
         password: "",
         confirm_password: "",
-        phone: "",
-        secondary_phone: "",
-        address: "",
-        location: "",
-        prathishta_month: "",
-        prathishta_star: "",
-        ulsavam_start_month: "",
-        ulsavam_start_star: "",
-        ulsavam_end_month: "",
-        ulsavam_end_star: "",
-        google_map_location: "",
+        phone: user?.user?.phone ?? "",
+        secondary_phone: user?.user?.secondary_phone ?? "",
+        address: user?.address ?? "",
+        location: user?.location ?? "",
+        prathishta_month: user?.prathishta_month ?? "",
+        prathishta_star: user?.prathishta_star ?? "",
+        ulsavam_start_month: user?.ulsavam_start_month ?? "",
+        ulsavam_start_star: user?.ulsavam_start_star ?? "",
+        ulsavam_end_month: user?.ulsavam_end_month ?? "",
+        ulsavam_end_star: user?.ulsavam_end_star ?? "",
+        google_map_location: user?.google_map_location ?? "",
         role: "temple",
     });
-
+    const { post, loading, errors } = useInertiaPost(route("temple.store"));
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(formData);
+    };
     return (
         <>
             <CardHeader title="Temple Create" />
             <CardContent>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <StrongText>Basic Details</StrongText>
                     <div className="flex gap-4 flex-col md:grid md:grid-cols-3 md:gap-4 p-8">
                         <div className="flex flex-col">
                             <Input
-                                label="Temple Name"
-                                value={formData.temple_name}
-                                setValue={setFormValue("temple_name")}
+                                label="Name"
+                                value={formData.name}
+                                setValue={setFormValue("name")}
                             />
                         </div>
                         <div className="flex flex-col">
@@ -68,9 +77,9 @@ export default function TempleCreate({
                         </div>
                         <div className="flex flex-col">
                             <Input
-                                label="User Name"
-                                value={formData.user_name}
-                                setValue={setFormValue("user_name")}
+                                label="Username"
+                                value={formData.username}
+                                setValue={setFormValue("username")}
                             />
                         </div>
                         <div className="flex flex-col">

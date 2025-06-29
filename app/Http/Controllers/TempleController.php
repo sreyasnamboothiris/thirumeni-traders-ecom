@@ -17,8 +17,7 @@ class TempleController extends Controller
 {
     public function index()
     {
-        $temples = Temple::with('user')->latest()->get();
-
+        $temples = Temple::with('user')->get();
         return Inertia::render('Admin/UserManagement/UserIndex', [
             'user_type' => 'temple',
             'users' => $temples,
@@ -40,11 +39,13 @@ class TempleController extends Controller
 
     public function store(TempleRequest $request)
     {
+
         $templeRoleId = Role::where('slug', 'temple')->value('id');
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email ?? uniqid() . '@temple.local',
+            'username' => $request->username,
             'password' => Hash::make('password'),
             'role_id' => $templeRoleId,
         ]);
@@ -54,29 +55,43 @@ class TempleController extends Controller
             ['user_id' => $user->id]
         ));
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Temple created successfully',
-            'data' => $temple,
-        ], 201);
+        return redirect()->back()->with(['message' => 'Temple created successfully']);
     }
 
-    public function show(Temple $temple)
+    public function show(int $templeId)
     {
-        return response()->json([
-            'success' => true,
-            'data' => $temple
+        $temple = Temple::with('user')->findOrFail($templeId);
+
+        return Inertia::render('Admin/UserManagement/UserShow', [
+            'user_type' => 'temple',
+            'user' => $temple,
         ]);
     }
 
-    public function update(TempleRequest $request, Temple $temple)
+    public function update(TempleRequest $request, int $templeId)
     {
+        $temple = Temple::findOrFail($templeId);
         $temple->update($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Temple updated successfully',
             'data' => $temple,
+        ]);
+    }
+
+    public function edit(int $templeId)
+    {
+        $stars = MalayalamStar::all();
+        $months = MalayalamMonth::all();
+        $roles = Role::all();
+        $temple = Temple::with('user')->findOrFail($templeId);
+        return Inertia::render('Admin/UserManagement/UserCreate', [
+            'user_type' => 'temple',
+            'user' => $temple,
+            'stars' => $stars,
+            'roles' => $roles,
+            'months' => $months
         ]);
     }
 
