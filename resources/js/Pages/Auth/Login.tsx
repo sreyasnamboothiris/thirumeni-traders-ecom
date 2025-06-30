@@ -4,16 +4,22 @@ import Heading from "@/typography/Heading";
 import Button from "@/ui/button/Button";
 import Input from "@/ui/form/Input";
 import { Head } from "@inertiajs/react";
+import { route } from "ziggy-js";
+import useInertiaPost from "@/hooks/useInertiaPost";
 
 export default function Login({ status, canResetPassword }) {
-    const handleSubmit = (e) => {
-        e.event.preventDefault();
-        alert("post");
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(formData);
     };
     const { formData, setFormValue } = useCustomForm({
-        username: "",
+        email: "",
         password: "",
     });
+    const { post, loading, errors } = useInertiaPost<{
+        email: string;
+        password: string;
+    }>(route("login"));
     return (
         <GuestLayout>
             <Head title="Log in" />
@@ -23,9 +29,9 @@ export default function Login({ status, canResetPassword }) {
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4">
                     <Input
-                        label="Enter your username"
-                        value={formData.username}
-                        setValue={setFormValue("username")}
+                        label="Enter your email"
+                        value={formData.email}
+                        setValue={setFormValue("email")}
                     />
                 </div>
                 <div className="flex flex-col gap-4">

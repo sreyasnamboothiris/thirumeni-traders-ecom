@@ -14,6 +14,9 @@ import {
 } from "@/Components/ui/sidebar";
 import { AppSidebar } from "@/Components/app-sidebar";
 import AdminLayoutPadding from "./AdminLayoutPadding";
+import Button from "@/ui/button/Button";
+import ToogleNumber from "@/Components/ui/ToogleNumber";
+import { ToogleLanguage } from "@/Components/ui/ToogleLanguage";
 
 interface Properties {
     children?: ReactNode;
@@ -98,6 +101,7 @@ export default function AnalyticsDashboardLayout({
             <ToastContainer />
             <div className="sticky top-0 z-40 flex h-20 shrink-0 items-center justify-between gap-2 rounded-xl border border-gray-200 bg-gray-50/50 p-4 shadow-sm backdrop-blur-lg">
                 <SidebarTrigger className="md:ml-10" />
+                <ToogleLanguage />
             </div>
 
             <AppSidebar className="z-40" />

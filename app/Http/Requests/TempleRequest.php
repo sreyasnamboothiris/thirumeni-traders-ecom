@@ -19,12 +19,13 @@ class TempleRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-   public function rules(): array
+    public function rules(): array
     {
-        $templeId = $this->route('temple')?->id;
+        $templeId = 2;
 
         return [
             'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'address' => 'nullable|string',
             'contact' => 'nullable|string|max:20',
             'email' => [
