@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->string('username')->unique();
+            $table->string('name')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('password');
             $table->enum('preferred_language', ['ENG', 'MAL'])->default('ENG');
