@@ -9,7 +9,7 @@ export default function UserIndex({
     user_type: string;
     users: any[];
 }) {
-    const rows = users.map((user: any) => ({
+    const rows = users?.map((user: any) => ({
         id: user.id,
         name: user.name,
         email: user.user?.email ?? "N/A",
