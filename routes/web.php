@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
+use App\Http\Controllers\TempleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -19,11 +18,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::resource('temple', TempleController::class);
 
-####### test #####
+// ###### test #####
 
 Route::get('/ui/admin/dashboard', function () {
     return Inertia::render('Admin/AdminDashboard');
+});
+
+Route::get('/home', function () {
+    return Inertia::render('HomePage/HomeIndexPage');
 });
 Route::get('/ui/admin/user-management', function () {
     $userType = request('user_type');
@@ -34,11 +38,10 @@ Route::get('/ui/admin/user-management', function () {
 });
 Route::get('/ui/admin/user-management/user-create', function () {
     $userType = request('user_type');
+
     return Inertia::render('Admin/UserManagement/UserCreate', [
         'user_type' => $userType,
     ]);
 });
 
-
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

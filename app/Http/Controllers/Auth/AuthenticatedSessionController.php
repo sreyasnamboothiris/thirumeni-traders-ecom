@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Role;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-    // This handles validation and login
+        // This handles validation and login
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -41,8 +41,9 @@ class AuthenticatedSessionController extends Controller
         $allowedRoles = ['admin', 'temple'];
         $roleSlug = $user->role->slug ?? null;
 
-        if (!in_array($roleSlug, $allowedRoles)) {
+        if (! in_array($roleSlug, $allowedRoles)) {
             Auth::logout();
+
             return redirect()->route('login')->withErrors([
                 'email' => 'Only admin or temple users can login.',
             ]);
@@ -50,15 +51,15 @@ class AuthenticatedSessionController extends Controller
 
         // Redirect based on role
         if ($roleSlug === 'admin') {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+            return redirect()->intended(route('temple.index', absolute: false));
         }
 
         if ($roleSlug === 'temple') {
-            return redirect()->intended(route('temple.dashboard', absolute: false));
+            return redirect()->intended(route('temple.index', absolute: false));
         }
 
         // Default fallback
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('temple.index', absolute: false));
     }
 
     /**
