@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\TempleRequest;
 use App\Models\MalayalamMonth;
 use App\Models\MalayalamStar;
 use App\Models\Role;
 use App\Models\Temple;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
@@ -18,6 +16,7 @@ class TempleController extends Controller
     public function index()
     {
         $temples = Temple::with('user')->get();
+
         return Inertia::render('Admin/UserManagement/UserIndex', [
             'user_type' => 'temple',
             'users' => $temples,
@@ -29,11 +28,12 @@ class TempleController extends Controller
         $stars = MalayalamStar::all();
         $roles = Role::all();
         $months = MalayalamMonth::all();
+
         return Inertia::render('Admin/UserManagement/UserCreate', [
             'user_type' => 'temple',
             'stars' => $stars,
             'roles' => $roles,
-            'months' => $months
+            'months' => $months,
         ]);
     }
 
@@ -44,7 +44,7 @@ class TempleController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email ?? uniqid() . '@temple.local',
+            'email' => $request->email ?? uniqid().'@temple.local',
             'username' => $request->username,
             'password' => Hash::make('password'),
             'role_id' => $templeRoleId,
@@ -86,12 +86,13 @@ class TempleController extends Controller
         $months = MalayalamMonth::all();
         $roles = Role::all();
         $temple = Temple::with('user')->findOrFail($templeId);
+
         return Inertia::render('Admin/UserManagement/UserCreate', [
             'user_type' => 'temple',
             'user' => $temple,
             'stars' => $stars,
             'roles' => $roles,
-            'months' => $months
+            'months' => $months,
         ]);
     }
 

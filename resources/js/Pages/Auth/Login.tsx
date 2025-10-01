@@ -8,10 +8,6 @@ import { route } from "ziggy-js";
 import useInertiaPost from "@/hooks/useInertiaPost";
 
 export default function Login({ status, canResetPassword }) {
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(formData);
-    };
     const { formData, setFormValue } = useCustomForm({
         email: "",
         password: "",
@@ -19,7 +15,15 @@ export default function Login({ status, canResetPassword }) {
     const { post, loading, errors } = useInertiaPost<{
         email: string;
         password: string;
-    }>(route("login"));
+    }>(route("login"), {
+        showErrorToast: true,
+    });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(formData);
+        console.log(formData);
+    };
+
     return (
         <GuestLayout>
             <Head title="Log in" />

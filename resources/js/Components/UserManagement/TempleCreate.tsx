@@ -41,9 +41,12 @@ export default function TempleCreate({
         google_map_location: user?.google_map_location ?? "",
         role: "temple",
     });
-    const { post, loading, errors } = useInertiaPost(route("temple.store"));
+    const { post, loading, errors } = useInertiaPost(route("temple.store"), {
+        showErrorToast: true,
+    });
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log(formData);
         post(formData);
     };
     return (
