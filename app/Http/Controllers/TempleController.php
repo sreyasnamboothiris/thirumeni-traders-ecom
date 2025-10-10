@@ -44,9 +44,9 @@ class TempleController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email ?? uniqid().'@temple.local',
+            'email' => $request->email,
             'username' => $request->username,
-            'password' => Hash::make('password'),
+            'password' => Hash::make($request->password),
             'role_id' => $templeRoleId,
         ]);
 
@@ -55,7 +55,10 @@ class TempleController extends Controller
             ['user_id' => $user->id]
         ));
 
-        return redirect()->back()->with(['message' => 'Temple created successfully']);
+        // dd($temple);
+        return redirect()
+            ->route('temple.index')
+            ->with('message', 'Temple created successfully');
     }
 
     public function show(int $templeId)
@@ -70,14 +73,37 @@ class TempleController extends Controller
 
     public function update(TempleRequest $request, int $templeId)
     {
-        $temple = Temple::findOrFail($templeId);
-        $temple->update($request->validated());
+        $temple = Temple::with('user')->findOrFail($templeId);
+        $validated = $request->validated();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Temple updated successfully',
-            'data' => $temple,
-        ]);
+        // --- Update the related User ---
+        if ($temple->user) {
+            $temple->user->update([
+                'name' => $validated['name'] ?? $temple->user->name,
+                'username' => $validated['username'] ?? $temple->user->username,
+                'email' => $validated['email'] ?? $temple->user->email,
+                'password' => ! empty($validated['password'])
+                    ? \Hash::make($validated['password'])
+                    : $temple->user->password, // keep old password if not updated
+            ]);
+        }
+
+        // --- Remove user fields before updating temple ---
+        unset(
+            $validated['name'],
+            $validated['username'],
+            $validated['email'],
+            $validated['password'],
+            $validated['confirm_password']
+        );
+
+        // --- Update the temple data ---
+        $temple->update($validated);
+
+        // --- Redirect to index with success message ---
+        return redirect()
+            ->route('temple.index')
+            ->with('message', 'Temple updated successfully');
     }
 
     public function edit(int $templeId)

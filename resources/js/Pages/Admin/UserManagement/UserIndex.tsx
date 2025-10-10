@@ -1,6 +1,6 @@
 import ListResourcePage from "@/Components/ListingPage/ListResourcePage";
 import { route } from "ziggy-js";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 export default function UserIndex({
     user_type,

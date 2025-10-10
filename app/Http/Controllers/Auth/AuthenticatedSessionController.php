@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             Auth::logout();
 
             return redirect()->route('login')->withErrors([
-                'email' => 'Only admin or temple users can login.',
+                'username' => 'Only admin or temple users can login.',
             ]);
         }
 
