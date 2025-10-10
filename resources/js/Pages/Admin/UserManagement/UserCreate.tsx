@@ -13,7 +13,7 @@ interface Props {
 
 function UserCreate({ user_type, stars, roles, months, user }: Props) {
     return (
-        <AnalyticsDashboardLayout type="data" subtype="data-tables">
+        <AnalyticsDashboardLayout>
             <DashboardPadding>
                 <CardHeader title="User Create" />
                 <div>
