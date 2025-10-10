@@ -1,452 +1,526 @@
 "use client";
 
-import { useState } from "react";
-import {
-    Search,
-    ShoppingCart,
-    User,
-    Menu,
-    X,
-    ChevronDown,
-    Sun,
-    Moon,
-    Globe,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ShoppingCart as CartIcon } from "lucide-react";
 
-type Language = "english" | "malayalam";
-type Theme = "light" | "dark";
+/* ---------------- sample products ---------------- */
+const PRODUCTS = [
+    {
+        id: 1,
+        name: { english: "Brass Oil Lamp", malayalam: "പിച്ചള വിളക്ക്" },
+        price: 499,
+        image: "https://images.pexels.com/photos/6103171/pexels-photo-6103171.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    },
+    {
+        id: 2,
+        name: { english: "Ganesha Idol", malayalam: "ഗണപതി വിഗ്രഹം" },
+        price: 899,
+        image: "https://images.pexels.com/photos/28465069/pexels-photo-28465069.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    },
+    {
+        id: 3,
+        name: { english: "Incense Sticks Set", malayalam: "അഗർബത്തി സെറ്റ്" },
+        price: 299,
+        image: "https://images.pexels.com/photos/32168049/pexels-photo-32168049.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    },
+];
 
-interface Product {
-    id: number;
-    name: { english: string; malayalam: string };
-    price: number;
-    image: string;
-    category: string;
-}
+const FONT_LINK =
+    "https://fonts.googleapis.com/css2?family=Anton&family=Merriweather:wght@300;400;700&family=Montserrat:wght@300;400;600&display=swap";
 
-interface Category {
-    name: { english: string; malayalam: string };
-    subcategories: { english: string; malayalam: string }[];
-}
+/* ---------------- brand tokens ---------------- */
+const BG_BASE = "#f6f4ef";
+const HEADER_BG = "#efe8df"; // updated header background
+const PRIMARY = "#d4a857"; // solid CTA (gold)
+const SECONDARY = "#2fe3c6"; // secondary accent (teal)
+const TEXT_PRIMARY = "#111";
 
-export default function HomePage() {
-    const [language, setLanguage] = useState<Language>("english");
-    const [theme, setTheme] = useState<Theme>("light");
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
-    const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+export default function HomeNoGradient() {
+    const [language, setLanguage] = useState<"english" | "malayalam">(
+        "english"
+    );
+    const [cart, setCart] = useState<{ productId: number; qty: number }[]>([]);
+    const [cartOpen, setCartOpen] = useState(false);
 
-    const translations = {
+    useEffect(() => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = FONT_LINK;
+        document.head.appendChild(link);
+
+        const saved = localStorage.getItem("tt_cart_v3");
+        if (saved) {
+            try {
+                setCart(JSON.parse(saved));
+            } catch {
+                setCart([]);
+            }
+        }
+        return () => document.head.removeChild(link);
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("tt_cart_v3", JSON.stringify(cart));
+    }, [cart]);
+
+    function addToCart(productId: number, qty = 1) {
+        setCart((prev) => {
+            const idx = prev.findIndex((c) => c.productId === productId);
+            if (idx >= 0) {
+                const copy = [...prev];
+                copy[idx].qty += qty;
+                return copy;
+            }
+            return [...prev, { productId, qty }];
+        });
+        setCartOpen(true);
+    }
+
+    const t = {
         english: {
-            topBar: "Free Shipping on Orders Above ₹500",
-            products: "Products",
-            temples: "Temples",
-            services: "Services",
-            profile: "Profile",
-            search: "Search for devotional items, puja materials...",
+            heroSmall: "Kerala E-Rituals; Products and Service;",
+            heroTitle: "UNLEASH THE POTENTIAL OF FAITH WITH OUR PRODUCTS",
+            heroDesc:
+                "Helping to satisfy your Rituals needs with our products and services in a well-organised",
             featured: "Featured Products",
-            shopNow: "Shop Now",
+            shopNow: "Add to Cart",
         },
         malayalam: {
-            topBar: "₹500 ന് മുകളിലുള്ള ഓർഡറുകൾക്ക് സൗജന്യ ഷിപ്പിംഗ്",
-            products: "ഉൽപ്പന്നങ്ങൾ",
-            temples: "ക്ഷേത്രങ്ങൾ",
-            services: "സേവനങ്ങൾ",
-            profile: "പ്രൊഫൈൽ",
-            search: "ഭക്തി സാധനങ്ങൾ തിരയുക...",
-            featured: "പ്രധാന ഉൽപ്പന്നങ്ങൾ",
-            shopNow: "ഇപ്പോൾ വാങ്ങുക",
+            heroSmall: "കേരള ഇ-രീതികൾ; ഉൽപ്പന്നങ്ങളും സേവനങ്ങളും;",
+            heroTitle: "വിശ്വാസത്തിന്റെ ശേഷി അനാവരണം ചെയ്യുക",
+            heroDesc:
+                "നമ്മുടെ ഉൽപ്പന്നങ്ങളും സേവനങ്ങളും ഉപയോഗിച്ച് നിങ്ങളുടെ അഭിലാഷങ്ങൾ തൃപ്തിപ്പെടുത്തുക - ഒരു ക്രമീകരിക്കപ്പെട്ട മോഡൽ",
+            featured: "പ്രമുഖ ഉൽപ്പന്നങ്ങൾ",
+            shopNow: "കാർട്ടിൽ ചേർക്കുക",
         },
-    };
-
-    const categories: Category[] = [
-        {
-            name: { english: "Puja Items", malayalam: "പൂജാ സാധനങ്ങൾ" },
-            subcategories: [
-                { english: "Incense Sticks", malayalam: "അഗർബത്തി" },
-                { english: "Oil Lamps", malayalam: "വിളക്കുകൾ" },
-                { english: "Camphor", malayalam: "കർപ്പൂരം" },
-                { english: "Holy Ash", malayalam: "വിഭൂതി" },
-            ],
-        },
-        {
-            name: { english: "Idols & Statues", malayalam: "വിഗ്രഹങ്ങൾ" },
-            subcategories: [
-                { english: "Ganesha", malayalam: "ഗണപതി" },
-                { english: "Krishna", malayalam: "കൃഷ്ണൻ" },
-                { english: "Lakshmi", malayalam: "ലക്ഷ്മി" },
-                { english: "Shiva", malayalam: "ശിവൻ" },
-            ],
-        },
-        {
-            name: { english: "Offerings", malayalam: "വഴിപാടുകൾ" },
-            subcategories: [
-                { english: "Flowers", malayalam: "പൂക്കൾ" },
-                { english: "Fruits", malayalam: "ഫലങ്ങൾ" },
-                { english: "Prasadam", malayalam: "പ്രസാദം" },
-                { english: "Sacred Thread", malayalam: "പൂണൂൽ" },
-            ],
-        },
-        {
-            name: { english: "Books & Media", malayalam: "പുസ്തകങ്ങൾ" },
-            subcategories: [
-                { english: "Bhagavad Gita", malayalam: "ഭഗവദ് ഗീത" },
-                { english: "Ramayana", malayalam: "രാമായണം" },
-                { english: "Mantras", malayalam: "മന്ത്രങ്ങൾ" },
-                { english: "Audio CDs", malayalam: "ഓഡിയോ സിഡികൾ" },
-            ],
-        },
-    ];
-
-    const products: Product[] = [
-        {
-            id: 1,
-            name: { english: "Brass Oil Lamp", malayalam: "പിച്ചള വിളക്ക്" },
-            price: 499,
-            image: "https://images.pexels.com/photos/6787202/pexels-photo-6787202.jpeg?auto=compress&cs=tinysrgb&w=400",
-            category: "Puja Items",
-        },
-        {
-            id: 2,
-            name: { english: "Ganesha Idol", malayalam: "ഗണപതി വിഗ്രഹം" },
-            price: 899,
-            image: "https://images.pexels.com/photos/3068593/pexels-photo-3068593.jpeg?auto=compress&cs=tinysrgb&w=400",
-            category: "Idols",
-        },
-        {
-            id: 3,
-            name: {
-                english: "Incense Sticks Set",
-                malayalam: "അഗർബത്തി സെറ്റ്",
-            },
-            price: 299,
-            image: "https://images.pexels.com/photos/4056726/pexels-photo-4056726.jpeg?auto=compress&cs=tinysrgb&w=400",
-            category: "Puja Items",
-        },
-        {
-            id: 4,
-            name: { english: "Bhagavad Gita", malayalam: "ഭഗവദ് ഗീത" },
-            price: 350,
-            image: "https://images.pexels.com/photos/6787268/pexels-photo-6787268.jpeg?auto=compress&cs=tinysrgb&w=400",
-            category: "Books",
-        },
-        {
-            id: 5,
-            name: { english: "Camphor Box", malayalam: "കർപ്പൂര പെട്ടി" },
-            price: 199,
-            image: "https://images.pexels.com/photos/7207273/pexels-photo-7207273.jpeg?auto=compress&cs=tinysrgb&w=400",
-            category: "Puja Items",
-        },
-        {
-            id: 6,
-            name: { english: "Krishna Statue", malayalam: "കൃഷ്ണ വിഗ്രഹം" },
-            price: 1299,
-            image: "https://images.pexels.com/photos/8828581/pexels-photo-8828581.jpeg?auto=compress&cs=tinysrgb&w=400",
-            category: "Idols",
-        },
-    ];
-
-    const t = translations[language];
-
-    const bgClass = theme === "dark" ? "bg-gray-900" : "bg-gray-50";
-    const textClass = theme === "dark" ? "text-white" : "text-gray-900";
-    const cardBgClass = theme === "dark" ? "bg-gray-800" : "bg-white";
-    const borderClass =
-        theme === "dark" ? "border-gray-700" : "border-gray-200";
+    }[language];
 
     return (
         <div
-            className={`min-h-screen ${bgClass} ${textClass} transition-colors duration-300`}
+            style={{
+                background: BG_BASE,
+                color: TEXT_PRIMARY,
+                fontFamily: "Montserrat, system-ui, sans-serif",
+                minHeight: "100vh",
+            }}
         >
-            <div className="top-bar bg-gradient-to-r from-orange-600 to-orange-500 text-white py-2 px-4 text-center text-sm font-medium animate-fade-in">
-                {t.topBar}
-            </div>
-
+            {/* Header */}
             <header
-                className={`sticky top-0 z-50 ${cardBgClass} shadow-md transition-all duration-300`}
+                style={{
+                    background: HEADER_BG,
+                    padding: "14px 28px",
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 120,
+                    borderBottom: "1px solid rgba(0,0,0,0.06)",
+                    boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+                }}
             >
-                <nav className="container mx-auto px-4">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center gap-8">
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() =>
-                                        setMobileMenuOpen(!mobileMenuOpen)
-                                    }
-                                    className="lg:hidden p-2 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg transition-all"
-                                >
-                                    {mobileMenuOpen ? (
-                                        <X size={24} />
-                                    ) : (
-                                        <Menu size={24} />
-                                    )}
-                                </button>
-                                <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                                    Thirumeni Traders
-                                </h1>
-                            </div>
-
-                            <div className="hidden lg:flex items-center gap-6">
-                                <div
-                                    className="relative group"
-                                    onMouseEnter={() =>
-                                        setHoveredCategory("products")
-                                    }
-                                    onMouseLeave={() =>
-                                        setHoveredCategory(null)
-                                    }
-                                >
-                                    <button className="flex items-center gap-1 py-2 hover:text-orange-600 transition-colors font-medium">
-                                        {t.products}
-                                        <ChevronDown
-                                            size={16}
-                                            className="group-hover:rotate-180 transition-transform duration-300"
-                                        />
-                                    </button>
-                                    {hoveredCategory === "products" && (
-                                        <div
-                                            className={`absolute top-full left-0 mt-2 w-64 ${cardBgClass} rounded-lg shadow-xl border ${borderClass} py-2 animate-slide-down`}
-                                        >
-                                            {categories.map((cat, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className="group/item"
-                                                >
-                                                    <div className="px-4 py-2 hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors cursor-pointer font-semibold">
-                                                        {cat.name[language]}
-                                                    </div>
-                                                    <div className="pl-6">
-                                                        {cat.subcategories.map(
-                                                            (sub, subIdx) => (
-                                                                <div
-                                                                    key={subIdx}
-                                                                    className="px-4 py-1.5 text-sm hover:bg-orange-50 dark:hover:bg-gray-700 hover:text-orange-600 transition-all cursor-pointer"
-                                                                >
-                                                                    {
-                                                                        sub[
-                                                                            language
-                                                                        ]
-                                                                    }
-                                                                </div>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                                <a
-                                    href="#temples"
-                                    className="py-2 hover:text-orange-600 transition-colors font-medium"
-                                >
-                                    {t.temples}
-                                </a>
-                                <a
-                                    href="#services"
-                                    className="py-2 hover:text-orange-600 transition-colors font-medium"
-                                >
-                                    {t.services}
-                                </a>
-                            </div>
+                <div
+                    style={{
+                        maxWidth: 1280,
+                        margin: "0 auto",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    {/* logo + title */}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 14,
+                        }}
+                    >
+                        <div
+                            style={{
+                                width: 76,
+                                height: 76,
+                                background: "#fff",
+                                borderRadius: 12,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+                            }}
+                        >
+                            <img
+                                src="/logo.svg"
+                                alt="logo"
+                                style={{
+                                    width: 64,
+                                    height: 64,
+                                    objectFit: "contain",
+                                }}
+                            />
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <div className="relative">
-                                <button
-                                    onClick={() =>
-                                        setLanguageDropdownOpen(
-                                            !languageDropdownOpen
-                                        )
-                                    }
-                                    className="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-                                >
-                                    <Globe size={20} />
-                                    <span className="hidden sm:inline text-sm">
-                                        {language === "english" ? "EN" : "ML"}
-                                    </span>
-                                </button>
-                                {languageDropdownOpen && (
-                                    <div
-                                        className={`absolute right-0 mt-2 w-40 ${cardBgClass} rounded-lg shadow-xl border ${borderClass} py-2 animate-slide-down`}
-                                    >
-                                        <button
-                                            onClick={() => {
-                                                setLanguage("english");
-                                                setLanguageDropdownOpen(false);
-                                            }}
-                                            className="w-full px-4 py-2 text-left hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors"
-                                        >
-                                            English
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setLanguage("malayalam");
-                                                setLanguageDropdownOpen(false);
-                                            }}
-                                            className="w-full px-4 py-2 text-left hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors"
-                                        >
-                                            മലയാളം
-                                        </button>
-                                    </div>
-                                )}
+                        <div>
+                            <div
+                                style={{
+                                    fontWeight: 800,
+                                    letterSpacing: 1.6,
+                                    color: TEXT_PRIMARY,
+                                }}
+                            >
+                                THIRUMENI{" "}
+                                <span style={{ fontWeight: 600 }}>traders</span>
                             </div>
+                            <div
+                                style={{
+                                    color: PRIMARY,
+                                    fontSize: 12,
+                                    marginTop: 4,
+                                }}
+                            >
+                                Kerala E-Rituals | Products & Service
+                            </div>
+                        </div>
+                    </div>
 
+                    {/* nav & actions */}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 22,
+                        }}
+                    >
+                        <nav
+                            style={{
+                                display: "flex",
+                                gap: 22,
+                                fontWeight: 700,
+                            }}
+                        >
+                            {["HOME", "ABOUT", "SHOP", "CONTACT"].map(
+                                (item) => (
+                                    <a
+                                        key={item}
+                                        href={`#${item.toLowerCase()}`}
+                                        style={{
+                                            color: TEXT_PRIMARY,
+                                            textDecoration: "none",
+                                            position: "relative",
+                                            padding: "6px 0",
+                                        }}
+                                        onMouseEnter={(e) =>
+                                            (e.currentTarget.style.color =
+                                                PRIMARY)
+                                        }
+                                        onMouseLeave={(e) =>
+                                            (e.currentTarget.style.color =
+                                                TEXT_PRIMARY)
+                                        }
+                                    >
+                                        {item}
+                                        <span
+                                            style={{
+                                                display: "block",
+                                                height: 3,
+                                                width: 0,
+                                                background: SECONDARY,
+                                                borderRadius: 4,
+                                                marginTop: 6,
+                                                transition: "width .22s",
+                                            }}
+                                            className="nav-underline"
+                                        />
+                                    </a>
+                                )
+                            )}
+                        </nav>
+
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 10,
+                                alignItems: "center",
+                            }}
+                        >
                             <button
                                 onClick={() =>
-                                    setTheme(
-                                        theme === "light" ? "dark" : "light"
+                                    setLanguage((l) =>
+                                        l === "english"
+                                            ? "malayalam"
+                                            : "english"
                                     )
                                 }
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+                                style={{
+                                    padding: "8px 10px",
+                                    borderRadius: 8,
+                                    border: "1px solid rgba(0,0,0,0.06)",
+                                    background: "#fff",
+                                    cursor: "pointer",
+                                    fontWeight: 700,
+                                }}
                             >
-                                {theme === "light" ? (
-                                    <Moon size={20} />
-                                ) : (
-                                    <Sun size={20} />
-                                )}
+                                {language === "english" ? "EN" : "ML"}
                             </button>
 
-                            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all relative">
-                                <ShoppingCart size={20} />
-                                <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                    0
+                            <button
+                                onClick={() => setCartOpen(true)}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    background: PRIMARY,
+                                    color: "#111",
+                                    border: "none",
+                                    padding: "8px 14px",
+                                    borderRadius: 10,
+                                    cursor: "pointer",
+                                    fontWeight: 800,
+                                }}
+                                title="Open cart"
+                            >
+                                <CartIcon size={16} />
+                                <span>
+                                    {cart.reduce((s, c) => s + c.qty, 0)}
                                 </span>
                             </button>
-
-                            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
-                                <User size={20} />
-                            </button>
                         </div>
-                    </div>
-
-                    {mobileMenuOpen && (
-                        <div className="lg:hidden py-4 border-t border-gray-200 dark:border-gray-700 animate-slide-down">
-                            <div className="flex flex-col gap-2">
-                                <button className="text-left px-4 py-2 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-medium">
-                                    {t.products}
-                                </button>
-                                <a
-                                    href="#temples"
-                                    className="px-4 py-2 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-medium"
-                                >
-                                    {t.temples}
-                                </a>
-                                <a
-                                    href="#services"
-                                    className="px-4 py-2 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-medium"
-                                >
-                                    {t.services}
-                                </a>
-                                <a
-                                    href="#profile"
-                                    className="px-4 py-2 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-medium"
-                                >
-                                    {t.profile}
-                                </a>
-                            </div>
-                        </div>
-                    )}
-                </nav>
-            </header>
-
-            <main className="container mx-auto px-4 py-8">
-                <div className="mb-12 animate-fade-in">
-                    <div className="relative max-w-4xl mx-auto">
-                        <Search
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-                            size={24}
-                        />
-                        <input
-                            type="text"
-                            placeholder={t.search}
-                            className={`w-full pl-14 pr-4 py-4 ${cardBgClass} border ${borderClass} rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all text-lg`}
-                        />
                     </div>
                 </div>
+            </header>
 
-                <section className="mb-12">
-                    <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                        {t.featured}
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {products.map((product, idx) => (
-                            <div
-                                key={product.id}
-                                className={`${cardBgClass} rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 animate-fade-in-up border ${borderClass}`}
-                                style={{ animationDelay: `${idx * 100}ms` }}
-                            >
-                                <div className="relative overflow-hidden group">
-                                    <img
-                                        src={product.image}
-                                        alt={product.name[language]}
-                                        className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
-                                </div>
-                                <div className="p-4">
-                                    <h3 className="font-semibold text-lg mb-2">
-                                        {product.name[language]}
-                                    </h3>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-2xl font-bold text-orange-600">
-                                            ₹{product.price}
-                                        </span>
-                                        <button className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                                            {t.shopNow}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+            {/* Hero */}
+            <main
+                style={{
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    padding: "44px 24px 72px",
+                }}
+            >
+                <section
+                    style={{
+                        display: "flex",
+                        gap: 36,
+                        alignItems: "flex-start",
+                    }}
+                >
+                    <div style={{ flex: 1, maxWidth: 760 }}>
+                        <div style={{ fontWeight: 600, marginBottom: 12 }}>
+                            {t.heroSmall}
+                        </div>
+
+                        <h1
+                            style={{
+                                fontFamily: "Anton, sans-serif",
+                                fontSize: 52,
+                                margin: 0,
+                                lineHeight: 1,
+                                textTransform: "uppercase",
+                                color: TEXT_PRIMARY,
+                            }}
+                        >
+                            {t.heroTitle}
+                        </h1>
+
+                        <p
+                            style={{
+                                fontFamily: "Merriweather, serif",
+                                fontSize: 18,
+                                color: "#222",
+                                marginTop: 20,
+                                maxWidth: 700,
+                            }}
+                        >
+                            {t.heroDesc} <strong>Kerala-Tantrik Model</strong>
+                        </p>
                     </div>
                 </section>
             </main>
 
+            {/* Footer */}
+            <footer
+                style={{
+                    background: "#fff",
+                    borderTop: "1px solid rgba(0,0,0,0.04)",
+                    marginTop: 40,
+                }}
+            >
+                <div
+                    style={{
+                        maxWidth: 1280,
+                        margin: "0 auto",
+                        padding: "48px 24px",
+                        display: "grid",
+                        gridTemplateColumns: "2fr 1fr",
+                        gap: 24,
+                    }}
+                >
+                    <div>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 12,
+                                marginBottom: 10,
+                            }}
+                        >
+                            <img
+                                src="/logo.svg"
+                                alt="logo"
+                                style={{
+                                    width: 56,
+                                    height: 56,
+                                    objectFit: "contain",
+                                }}
+                            />
+                            <div>
+                                <div style={{ fontWeight: 800 }}>
+                                    THIRUMENI traders
+                                </div>
+                                <div style={{ color: PRIMARY, fontSize: 12 }}>
+                                    Kerala E-Rituals & Devotional Goods
+                                </div>
+                            </div>
+                        </div>
+
+                        <p
+                            style={{
+                                maxWidth: 520,
+                                color: "#333",
+                                marginTop: 10,
+                            }}
+                        >
+                            Thirumeni Traders curates authentic Kerala ritual
+                            items & temple offerings — handcrafted, responsibly
+                            sourced, and delivered with care.
+                        </p>
+
+                        <div style={{ marginTop: 18 }}>
+                            <div style={{ fontWeight: 700, marginBottom: 8 }}>
+                                Join our list
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: 8,
+                                    maxWidth: 420,
+                                }}
+                            >
+                                <input
+                                    placeholder="Enter email"
+                                    style={{
+                                        flex: 1,
+                                        padding: "10px 12px",
+                                        borderRadius: 8,
+                                        border: "1px solid rgba(0,0,0,0.08)",
+                                    }}
+                                />
+                                <button
+                                    style={{
+                                        background: PRIMARY,
+                                        color: "#111",
+                                        border: "none",
+                                        padding: "10px 14px",
+                                        borderRadius: 8,
+                                        cursor: "pointer",
+                                        fontWeight: 700,
+                                    }}
+                                >
+                                    Subscribe
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 32 }}>
+                        <div>
+                            <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                                Shop
+                            </div>
+                            <ul
+                                style={{
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    color: "#444",
+                                }}
+                            >
+                                <li style={{ marginBottom: 8 }}>Puja Items</li>
+                                <li style={{ marginBottom: 8 }}>Idols</li>
+                                <li style={{ marginBottom: 8 }}>Offerings</li>
+                                <li style={{ marginBottom: 8 }}>Books</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                                Help
+                            </div>
+                            <ul
+                                style={{
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    color: "#444",
+                                }}
+                            >
+                                <li style={{ marginBottom: 8 }}>Contact</li>
+                                <li style={{ marginBottom: 8 }}>Shipping</li>
+                                <li style={{ marginBottom: 8 }}>Returns</li>
+                                <li style={{ marginBottom: 8 }}>FAQ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        borderTop: "1px solid rgba(0,0,0,0.03)",
+                        padding: "18px 24px",
+                    }}
+                >
+                    <div
+                        style={{
+                            maxWidth: 1280,
+                            margin: "0 auto",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            color: "#666",
+                        }}
+                    >
+                        <div>
+                            © {new Date().getFullYear()} Thirumeni Traders —
+                            Crafted with faith & care
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 12,
+                                alignItems: "center",
+                            }}
+                        >
+                            <div style={{ fontSize: 13, color: "#999" }}>
+                                Payment icons
+                            </div>
+                            <div
+                                style={{
+                                    width: 160,
+                                    height: 26,
+                                    background:
+                                        "linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02))",
+                                    borderRadius: 6,
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
             <style>{`
-                @keyframes fade-in {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
+        /* underline width on hover */
+        nav a:hover .nav-underline { width: 28px !important; }
 
-                @keyframes slide-down {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-10px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                @keyframes fade-in-up {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                .animate-fade-in {
-                    animation: fade-in 0.5s ease-out;
-                }
-
-                .animate-slide-down {
-                    animation: slide-down 0.3s ease-out;
-                }
-
-                .animate-fade-in-up {
-                    animation: fade-in-up 0.6s ease-out backwards;
-                }
-            `}</style>
+        @media (max-width: 900px) {
+          main { padding: 28px 16px 48px; }
+        }
+      `}</style>
         </div>
     );
 }
