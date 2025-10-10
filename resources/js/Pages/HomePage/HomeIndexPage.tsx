@@ -176,51 +176,11 @@ export default function HomeNoGradient() {
             </p>
           </div>
 
-          <aside style={{ width: 360 }}>
-            <div style={{ background: "#fff", borderRadius: 12, padding: 16, boxShadow: "0 10px 30px rgba(0,0,0,0.06)" }}>
-              <div style={{ fontWeight: 800, marginBottom: 10 }}>Quick Picks</div>
-              <div style={{ display: "grid", gap: 12 }}>
-                {PRODUCTS.slice(0, 3).map((p) => (
-                  <div key={p.id} style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <img src={p.image} alt={p.name.english} style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8 }} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700 }}>{p.name.english}</div>
-                      <div style={{ color: PRIMARY, fontWeight: 800 }}>₹{p.price}</div>
-                    </div>
-                    <button onClick={() => addToCart(p.id)} style={{ background: SECONDARY, color: "#001", border: "none", padding: "8px 12px", borderRadius: 999, cursor: "pointer", fontWeight: 800 }}>
-                      Add
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </aside>
+         
         </section>
 
-        {/* Products */}
-        <section id="shop" style={{ marginTop: 44 }}>
-          <h2 style={{ fontWeight: 800, fontSize: 20, marginBottom: 16 }}>{t.featured}</h2>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
-            {PRODUCTS.map((p) => (
-              <article key={p.id} style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 10px 25px rgba(0,0,0,0.06)" }}>
-                <div style={{ height: 220, overflow: "hidden" }}>
-                  <img src={p.image} alt={p.name.english} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </div>
-                <div style={{ padding: 16 }}>
-                  <div style={{ fontWeight: 800, marginBottom: 8, fontFamily: "Merriweather, serif" }}>{p.name.english}</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <div style={{ color: PRIMARY, fontWeight: 800, fontSize: 18 }}>₹{p.price}</div>
-                    <div style={{ flex: 1 }} />
-                    <button onClick={() => addToCart(p.id)} style={{ background: PRIMARY, color: "#111", border: "none", padding: "10px 14px", borderRadius: 999, cursor: "pointer", fontWeight: 800 }}>
-                      {t.shopNow}
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+       
+       
       </main>
 
       {/* Footer */}

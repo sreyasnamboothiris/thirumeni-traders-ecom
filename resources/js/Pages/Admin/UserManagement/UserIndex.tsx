@@ -1,6 +1,6 @@
 import ListResourcePage from "@/Components/ListingPage/ListResourcePage";
 import { route } from "ziggy-js";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 export default function UserIndex({
     user_type,
@@ -9,6 +9,8 @@ export default function UserIndex({
     user_type: string;
     users: any[];
 }) {
+   
+
     const rows = users?.map((user: any) => ({
         id: user.id,
         name: user.name,
@@ -55,6 +57,8 @@ export default function UserIndex({
 
     return (
         <div>
+            
+
             <ListResourcePage
                 rows={rows}
                 keys={keys}
@@ -73,6 +77,7 @@ export default function UserIndex({
                 cardStyles="p-4"
                 subheading="Users registered in the system"
             />
+          
         </div>
     );
 }
