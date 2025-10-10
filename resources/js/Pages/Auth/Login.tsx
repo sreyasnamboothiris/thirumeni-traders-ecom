@@ -21,7 +21,6 @@ export default function Login({ status, canResetPassword }) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(formData);
-        console.log(formData);
     };
 
     return (
@@ -36,6 +35,7 @@ export default function Login({ status, canResetPassword }) {
                         label="Enter your email"
                         value={formData.email}
                         setValue={setFormValue("email")}
+                        error={errors.email}
                     />
                 </div>
                 <div className="flex flex-col gap-4">
@@ -43,6 +43,7 @@ export default function Login({ status, canResetPassword }) {
                         label="Enter your password"
                         value={formData.password}
                         setValue={setFormValue("password")}
+                        error={errors.password}
                     />
                 </div>
                 <Button label="Login" type="submit" />
