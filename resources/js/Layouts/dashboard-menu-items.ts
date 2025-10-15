@@ -39,7 +39,7 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     {
         name: "Users",
         value: "users",
-        url: "ui/admin/user-management",
+        url: "admin/user-management",
         tabDescription: "Create different type of users.",
         icon: UserIcon,
         links: [
@@ -60,6 +60,25 @@ const dashboardMenuItems: DashboardMenuItem[] = [
             },
         ],
     },
+    {
+        name: "Products",
+        value: "products",
+        url: "/product",
+        tabDescription: "Create different type of products.",
+        icon: FileCode,
+        links: [
+            {
+                title: "Create",
+                link: "/product/create",
+                icon: FileCode,
+            },
+            {
+                title: "List",
+                link: "product",
+                icon: FileCode,
+            },
+        ],
+    }
 ];
 
 export default dashboardMenuItems;
