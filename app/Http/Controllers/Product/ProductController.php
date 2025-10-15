@@ -20,8 +20,33 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $data = $request->validated();
 
+        $product = Product::create($data);
         return Inertia::render('Product/ProductCreatePage');
+    }
+    public function edit(Product $product)
+    {
+        return Inertia::render('Product/ProductCreatePage', [
+            'product' => $product
+        ]);
+    }
+    public function update(Request $request, Product $product)
+    {
+        $data = $request->validated();
+
+        $product->update($data);
+
+        return redirect()
+            ->route('product.index')
+            ->with('message', 'Product updated successfully');
+    }
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return redirect()
+            ->route('product.index')
+            ->with('message', 'Product deleted successfully');
     }
 }
