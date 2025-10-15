@@ -46,7 +46,6 @@ export default function Login({ status, canResetPassword }: any) {
                         Username
                     </label>
                     <Input
-                        name="username"
                         value={formData.username}
                         setValue={setFormValue("username")}
                         required

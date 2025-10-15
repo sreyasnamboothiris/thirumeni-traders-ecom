@@ -11,18 +11,18 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                         <img
                             src="/logo_1.svg"
                             alt="Thirumeni Traders Logo"
-                            className="w-72 h-72 object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out"
+                            className="w-96 h-96 object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out"
                         />
                     </Link>
 
-                    <div>
+                    {/* <div>
                         <h1 className="text-2xl font-extrabold tracking-[0.15em] text-gray-800">
                             THIRUMENI TRADERS
                         </h1>
                         <p className="text-sm text-gray-600 mt-1 tracking-wide">
                             Kerala E-Rituals | Products & Services
                         </p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
