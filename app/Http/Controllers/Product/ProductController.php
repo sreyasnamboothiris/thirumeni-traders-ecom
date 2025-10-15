@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -18,9 +18,9 @@ class ProductController extends Controller
         return Inertia::render('Product/ProductCreatePage');
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        dd($request->all());
+        $validated = $request->validated();
 
         return Inertia::render('Product/ProductCreatePage');
     }
