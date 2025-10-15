@@ -13,6 +13,7 @@ import {
     Cog,
     UserIcon,
     User,
+    BoxIcon,
 } from "lucide-react";
 import { route } from "ziggy-js";
 
@@ -65,7 +66,7 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         value: "products",
         url: "/product",
         tabDescription: "Create different type of products.",
-        icon: FileCode,
+        icon: BoxIcon,
         links: [
             {
                 title: "Create",
@@ -74,8 +75,8 @@ const dashboardMenuItems: DashboardMenuItem[] = [
             },
             {
                 title: "List",
-                link: "product",
-                icon: FileCode,
+                link: "/product",
+                icon: BoxIcon,
             },
         ],
     }

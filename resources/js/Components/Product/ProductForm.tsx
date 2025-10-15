@@ -8,26 +8,27 @@ import TextArea from "@/ui/form/TextArea";
 import { route } from "ziggy-js";
 import { useDropzone } from "react-dropzone";
 import SelectList from "@/ui/form/SelectList";
+import { form } from "framer-motion/dist/types/client";
 
 export default function ProductForm({ product }: { product?: any }) {
     const { formData, setFormValue } = useCustomForm({
-        product_name: product?.product_name ?? "",
-        product_sku: product?.product_sku ?? "",
-        product_slug: product?.product_slug ?? "",
-        product_price_mrp: product?.product_price_mrp ?? "",
-        product_price_sell: product?.product_price_sell ?? "",
-        product_cost_price: product?.product_cost_price ?? "",
-        product_tax_rate: product?.product_tax_rate ?? "",
-        product_stock_qty: product?.product_stock_qty ?? "",
-        product_reorder_point: product?.product_reorder_point ?? "",
-        product_reorder_qty: product?.product_reorder_qty ?? "",
-        product_weight_grams: product?.product_weight_grams ?? "",
-        product_length_mm: product?.product_length_mm ?? "",
-        product_width_mm: product?.product_width_mm ?? "",
-        product_height_mm: product?.product_height_mm ?? "",
-        product_thumbnail_url: product?.product_thumbnail_url ?? "",
-        product_status: product?.product_status ?? "active",
-        product_description: product?.product_description ?? "",
+        name: product?.product_name ?? "",
+        sku: product?.product_sku ?? "",
+        slug: product?.product_slug ?? "",
+        price_mrp: product?.product_price_mrp ?? "",
+        price_sell: product?.product_price_sell ?? "",
+        cost_price: product?.product_cost_price ?? "",
+        tax_rate: product?.product_tax_rate ?? "",
+        stock_qty: product?.product_stock_qty ?? "",
+        reorder_point: product?.product_reorder_point ?? "",
+        reorder_qty: product?.product_reorder_qty ?? "",
+        weight_grams: product?.product_weight_grams ?? "",
+        length_mm: product?.product_length_mm ?? "",
+        width_mm: product?.product_width_mm ?? "",
+        height_mm: product?.product_height_mm ?? "",
+        thumbnail_url: product?.product_thumbnail_url ?? "",
+        status: product?.product_status ?? "active",
+        description: product?.product_description ?? "",
         _method: product ? "PUT" : undefined,
     });
 
@@ -38,7 +39,12 @@ export default function ProductForm({ product }: { product?: any }) {
     const endpoint = product
         ? route("product.update", product.id)
         : route("product.store");
-    const { post, errors, loading } = useInertiaPost<typeof formData>(endpoint);
+    const { post, errors, loading } = useInertiaPost<typeof formData>(
+        endpoint,
+        {
+            showErrorToast: true,
+        }
+    );
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (!acceptedFiles.length) return;
@@ -70,6 +76,7 @@ export default function ProductForm({ product }: { product?: any }) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log(formData);
         post(formData);
     };
 
@@ -84,34 +91,34 @@ export default function ProductForm({ product }: { product?: any }) {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <Input
-                        error={errors.product_name}
+                        error={errors.name}
                         label="Name"
-                        value={formData.product_name}
-                        setValue={setFormValue("product_name")}
+                        value={formData.name}
+                        setValue={setFormValue("name")}
                         placeholder="e.g. Brass Oil Lamp"
                     />
 
                     <Input
-                        error={errors.product_sku}
+                        error={errors.sku}
                         label="SKU"
-                        value={formData.product_sku}
-                        setValue={setFormValue("product_sku")}
+                        value={formData.sku}
+                        setValue={setFormValue("sku")}
                         placeholder="unique-sku-001"
                     />
                     <Input
-                        error={errors.product_slug}
+                        error={errors.slug}
                         label="Slug"
-                        value={formData.product_slug}
-                        setValue={setFormValue("product_slug")}
+                        value={formData.slug}
+                        setValue={setFormValue("slug")}
                         placeholder="slug-for-url"
                     />
 
                     <div className="md:col-span-2">
                         <TextArea
-                            error={errors.product_description}
+                            error={errors.description}
                             label="Description"
-                            value={formData.product_description}
-                            setValue={setFormValue("product_description")}
+                            value={formData.description}
+                            setValue={setFormValue("description")}
                             placeholder="Short description for SEO & customers"
                         />
                     </div>
@@ -166,49 +173,49 @@ export default function ProductForm({ product }: { product?: any }) {
                     <Input
                         label="MRP (₹)"
                         type="number"
-                        value={formData.product_price_mrp}
-                        setValue={setFormValue("product_price_mrp")}
+                        value={formData.price_mrp}
+                        setValue={setFormValue("price_mrp")}
                     />
                     <Input
                         label="Sell Price (₹)"
                         type="number"
-                        value={formData.product_price_sell}
-                        setValue={setFormValue("product_price_sell")}
+                        value={formData.price_sell}
+                        setValue={setFormValue("price_sell")}
                     />
                     <Input
                         label="Cost Price (₹)"
                         type="number"
-                        value={formData.product_cost_price}
-                        setValue={setFormValue("product_cost_price")}
+                        value={formData.cost_price}
+                        setValue={setFormValue("cost_price")}
                     />
                     <Input
                         label="Tax Rate (%)"
                         type="number"
-                        value={formData.product_tax_rate}
-                        setValue={setFormValue("product_tax_rate")}
+                        value={formData.tax_rate}
+                        setValue={setFormValue("tax_rate")}
                     />
                     <Input
                         label="Stock Qty"
                         type="number"
-                        value={formData.product_stock_qty}
-                        setValue={setFormValue("product_stock_qty")}
+                        value={formData.stock_qty}
+                        setValue={setFormValue("stock_qty")}
                     />
                     <Input
                         label="Reorder Point"
                         type="number"
-                        value={formData.product_reorder_point}
-                        setValue={setFormValue("product_reorder_point")}
+                        value={formData.reorder_point}
+                        setValue={setFormValue("reorder_point")}
                     />
                     <Input
                         label="Reorder Qty"
                         type="number"
-                        value={formData.product_reorder_qty}
-                        setValue={setFormValue("product_reorder_qty")}
+                        value={formData.reorder_qty}
+                        setValue={setFormValue("reorder_qty")}
                     />
                     <SelectList
                         label="Status"
-                        value={formData.product_status}
-                        setValue={setFormValue("product_status")}
+                        value={formData.status}
+                        setValue={setFormValue("status")}
                         list={[
                             { value: "active", label: "Active" },
                             { value: "draft", label: "Draft" },
@@ -229,26 +236,26 @@ export default function ProductForm({ product }: { product?: any }) {
                     <Input
                         label="Weight (g)"
                         type="number"
-                        value={formData.product_weight_grams}
-                        setValue={setFormValue("product_weight_grams")}
+                        value={formData.weight_grams}
+                        setValue={setFormValue("weight_grams")}
                     />
                     <Input
                         label="Length (mm)"
                         type="number"
-                        value={formData.product_length_mm}
-                        setValue={setFormValue("product_length_mm")}
+                        value={formData.length_mm}
+                        setValue={setFormValue("length_mm")}
                     />
                     <Input
                         label="Width (mm)"
                         type="number"
-                        value={formData.product_width_mm}
-                        setValue={setFormValue("product_width_mm")}
+                        value={formData.width_mm}
+                        setValue={setFormValue("width_mm")}
                     />
                     <Input
                         label="Height (mm)"
                         type="number"
-                        value={formData.product_height_mm}
-                        setValue={setFormValue("product_height_mm")}
+                        value={formData.height_mm}
+                        setValue={setFormValue("height_mm")}
                     />
                 </div>
             </div>
