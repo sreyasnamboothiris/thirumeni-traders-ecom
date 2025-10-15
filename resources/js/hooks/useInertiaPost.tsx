@@ -13,13 +13,16 @@ export interface PostOptions {
     onError?: () => unknown;
 }
 
-const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
-    const [errors, setErrors] = useState<Record<keyof T, string | undefined>>(
+const useInertiaPost = <Payload, ErrorKeys extends string = keyof Payload & string>(
+    url: string,
+    options?: PostOptions
+) => {
+    const [errors, setErrors] = useState<Record<ErrorKeys, string | undefined>>(
         {} as any
     );
     const [loading, setLoading] = useState(false);
     const post = useCallback(
-        (form: T) => {
+        (form: Payload | FormData) => {
             setLoading(true);
             router.post(
                 url,

@@ -1,67 +1,196 @@
+import React, { useCallback, useEffect, useState } from "react";
 import useCustomForm from "@/hooks/useCustomForm";
 import useInertiaPost from "@/hooks/useInertiaPost";
 import Button from "@/ui/button/Button";
 import CardHeader from "@/ui/Card/CardHeader";
-import FileInput from "@/ui/form/FileInput";
 import Input from "@/ui/form/Input";
+import TextArea from "@/ui/form/TextArea";
 import { route } from "ziggy-js";
+import { useDropzone } from "react-dropzone";
 
 export default function ProductForm({ product }: { product?: any }) {
-    const { formData, setFormValue } = useCustomForm({
-        product_name: product?.product_name ?? "",
-        product_description: product?.product_description ?? "",
-        product_price: product?.product_price ?? "",
-        product_image: product?.product_image ?? "",
-        _method: product ? "PUT" : undefined,
-    });
+  const { formData, setFormValue } = useCustomForm({
+    product_name: product?.product_name ?? "",
+    product_sku: product?.product_sku ?? "",
+    product_slug: product?.product_slug ?? "",
+    product_price_mrp: product?.product_price_mrp ?? "",
+    product_price_sell: product?.product_price_sell ?? "",
+    product_cost_price: product?.product_cost_price ?? "",
+    product_tax_rate: product?.product_tax_rate ?? "",
+    product_stock_qty: product?.product_stock_qty ?? "",
+    product_reorder_point: product?.product_reorder_point ?? "",
+    product_reorder_qty: product?.product_reorder_qty ?? "",
+    product_weight_grams: product?.product_weight_grams ?? "",
+    product_length_mm: product?.product_length_mm ?? "",
+    product_width_mm: product?.product_width_mm ?? "",
+    product_height_mm: product?.product_height_mm ?? "",
+    product_thumbnail_url: product?.product_thumbnail_url ?? "",
+    product_status: product?.product_status ?? "active",
+    product_description: product?.product_description ?? "",
+    _method: product ? "PUT" : undefined,
+  });
 
-    const { post, errors } = useInertiaPost<typeof formData>(
-        product ? route("product.update", product.id) : route("product.store")
-    );
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<{ id: string; url: string; name: string }[]>([]);
+  const endpoint = product ? route("product.update", product.id) : route("product.store");
+  const { post, errors, loading } = useInertiaPost<typeof formData>(endpoint);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        post(formData);
-    };
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (!acceptedFiles.length) return;
+    setFiles((prev) => [...prev, ...acceptedFiles]);
+    const newPreviews = acceptedFiles.map((f) => ({
+      id: `${f.name}-${f.size}-${Date.now()}`,
+      url: URL.createObjectURL(f),
+      name: f.name,
+    }));
+    setPreviews((p) => [...p, ...newPreviews]);
+  }, []);
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <CardHeader title="Product Create" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                    <Input
-                        label="Product Name"
-                        value={formData.product_name}
-                        setValue={setFormValue("product_name")}
-                        error={errors.product_name}
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <Input
-                        label="Product Description"
-                        value={formData.product_description}
-                        setValue={setFormValue("product_description")}
-                        error={errors.product_description}
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <Input
-                        label="Product Price"
-                        value={formData.product_price}
-                        setValue={setFormValue("product_price")}
-                        error={errors.product_price}
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <FileInput
-                        label="Product Image"
-                        value={formData.product_image}
-                        setValue={setFormValue("product_image")}
-                        error={errors.product_image}
-                    />
-                </div>
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [".jpeg", ".jpg", ".png", ".webp", ".gif"] },
+    maxFiles: 10,
+    maxSize: 5 * 1024 * 1024,
+  });
+
+  useEffect(() => () => previews.forEach((p) => URL.revokeObjectURL(p.url)), [previews]);
+
+  const removeFileAt = (index: number) => {
+    setFiles((f) => f.filter((_, i) => i !== index));
+    setPreviews((p) => p.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData();
+    Object.entries(formData).forEach(([k, v]) => v != null && fd.append(k, String(v)));
+    files.forEach((f) => fd.append("images[]", f));
+    post(fd as unknown as typeof formData);
+  };
+
+  const FieldError = ({ name }: { name: string }) => {
+    const v = (errors as any)?.[name];
+    return v ? (
+      <p className="text-xs text-red-500 mt-1">{Array.isArray(v) ? v[0] : v}</p>
+    ) : null;
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5 text-sm">
+      <CardHeader title={product ? "Edit Product" : "Create Product"} />
+
+      {/* BASIC */}
+      <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+        <h3 className="font-semibold text-gray-800 mb-3">Basic Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label className="text-gray-600 text-xs">Name</label>
+            <Input value={formData.product_name} setValue={setFormValue("product_name")} placeholder="e.g. Brass Oil Lamp" />
+            <FieldError name="product_name" />
+          </div>
+          <div>
+            <label className="text-gray-600 text-xs">SKU</label>
+            <Input value={formData.product_sku} setValue={setFormValue("product_sku")} placeholder="unique-sku-001" />
+            <FieldError name="product_sku" />
+          </div>
+          <div>
+            <label className="text-gray-600 text-xs">Slug</label>
+            <Input value={formData.product_slug} setValue={setFormValue("product_slug")} placeholder="slug-for-url" />
+            <FieldError name="product_slug" />
+          </div>
+          <div className="md:col-span-2">
+            <label className="text-gray-600 text-xs">Description</label>
+            <TextArea
+              value={formData.product_description}
+              setValue={setFormValue("product_description")}
+              placeholder="Short description for SEO & customers"
+            />
+            <FieldError name="product_description" />
+          </div>
+        </div>
+      </div>
+
+      {/* MEDIA */}
+      <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+        <h3 className="font-semibold text-gray-800 mb-3">Product Images</h3>
+        <div
+          {...getRootProps()}
+          className={`border-dashed border-2 rounded-md py-5 px-3 text-center text-gray-500 text-xs cursor-pointer ${
+            isDragActive ? "border-indigo-300 bg-indigo-50" : "hover:border-gray-300"
+          }`}
+        >
+          <input {...getInputProps()} />
+          Drag & drop or click to upload (up to 10)
+        </div>
+        <div className="mt-3 grid grid-cols-3 sm:grid-cols-6 gap-2">
+          {previews.map((p, i) => (
+            <div key={p.id} className="relative rounded border overflow-hidden">
+              <img src={p.url} className="w-full h-20 object-cover" alt={p.name} />
+              <button
+                type="button"
+                onClick={() => removeFileAt(i)}
+                className="absolute top-1 right-1 bg-black/50 text-white text-xs rounded px-1"
+              >
+                ×
+              </button>
             </div>
-            <Button type="submit" label="Save" />
-        </form>
-    );
+          ))}
+        </div>
+        <FieldError name="images" />
+      </div>
+
+      {/* PRICING & INVENTORY */}
+      <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+        <h3 className="font-semibold text-gray-800 mb-3">Pricing & Inventory</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Input label="MRP (₹)" type="number" value={formData.product_price_mrp} setValue={setFormValue("product_price_mrp")} />
+          <Input label="Sell Price (₹)" type="number" value={formData.product_price_sell} setValue={setFormValue("product_price_sell")} />
+          <Input label="Cost Price (₹)" type="number" value={formData.product_cost_price} setValue={setFormValue("product_cost_price")} />
+          <Input label="Tax Rate (%)" type="number" value={formData.product_tax_rate} setValue={setFormValue("product_tax_rate")} />
+          <Input label="Stock Qty" type="number" value={formData.product_stock_qty} setValue={setFormValue("product_stock_qty")} />
+          <Input label="Reorder Point" type="number" value={formData.product_reorder_point} setValue={setFormValue("product_reorder_point")} />
+          <Input label="Reorder Qty" type="number" value={formData.product_reorder_qty} setValue={setFormValue("product_reorder_qty")} />
+          <div>
+            <label className="text-gray-600 text-xs">Status</label>
+            <select
+              value={formData.product_status}
+              onChange={(e) => setFormValue("product_status")(e.target.value)}
+              className="block w-full mt-1 border rounded-md p-1.5 text-sm"
+            >
+              <option value="active">Active</option>
+              <option value="draft">Draft</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* DIMENSIONS */}
+      <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+        <h3 className="font-semibold text-gray-800 mb-3">Physical Details</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Input label="Weight (g)" type="number" value={formData.product_weight_grams} setValue={setFormValue("product_weight_grams")} />
+          <Input label="Length (mm)" type="number" value={formData.product_length_mm} setValue={setFormValue("product_length_mm")} />
+          <Input label="Width (mm)" type="number" value={formData.product_width_mm} setValue={setFormValue("product_width_mm")} />
+          <Input label="Height (mm)" type="number" value={formData.product_height_mm} setValue={setFormValue("product_height_mm")} />
+        </div>
+      </div>
+
+      {/* ACTIONS */}
+      <div className="flex justify-end gap-2 pt-2">
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="px-3 py-1.5 rounded border border-gray-300 text-sm hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <Button
+          type="submit"
+          label={loading ? "Saving..." : "Save"}
+          disabled={loading}
+        />
+      </div>
+    </form>
+  );
 }
