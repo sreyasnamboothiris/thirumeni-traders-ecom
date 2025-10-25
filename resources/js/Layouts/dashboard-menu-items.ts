@@ -40,23 +40,23 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     {
         name: "Users",
         value: "users",
-        url: "admin/user-management",
+        url: "/users",
         tabDescription: "Create different type of users.",
         icon: UserIcon,
         links: [
             {
                 title: "Customer",
-                link: "/ui/admin/user-management?user_type=customer",
+                link: "/customer",
                 icon: UserIcon,
             },
             {
                 title: "Temple",
-                link: "/ui/admin/user-management?user_type=temple",
+                link: "/temple",
                 icon: UserIcon,
             },
             {
                 title: "Shop",
-                link: "/ui/admin/user-management?user_type=shop",
+                link: "/shop",
                 icon: UserIcon,
             },
         ],

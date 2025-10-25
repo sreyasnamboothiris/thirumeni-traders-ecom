@@ -1,14 +1,34 @@
-import AnalyticsDashboardLayout from "@/Layouts/AnalyticsDashboardLayout";
-import DashboardPadding from "@/Layouts/DashboardPadding";
+import AdminLayout from "@/Layouts/AdminLayout";
 import CardHeader from "@/ui/Card/CardHeader";
+import { Paginator } from "@/ui/ui_interfaces";
+import { Product } from "@/interfaces/data_interfaces";
+import ListItems from "@/Components/ListingPage/ListItems";
 
-export default function ProductIndexPage({ products }: { products: any }) {
+export default function ProductIndexPage({
+    products,
+}: {
+    products: Paginator<Product>;
+}) {
+    const pagination = products;
+
+    // 👇 define which keys map to what in the component
+    const keyMap = {
+        key: "id",
+        title: "name",
+        subtitle: "slug",
+        description: "description",
+    } as const;
     console.log(products);
     return (
-        <AnalyticsDashboardLayout>
-            <DashboardPadding>
-                <CardHeader title="Product Index" />
-            </DashboardPadding>
-        </AnalyticsDashboardLayout>
+        <AdminLayout>
+            <CardHeader title="Product Index" />
+            <div className="px-6 py-4">
+                <ListItems<Product>
+                    items={products?.data}
+                    keyMap={keyMap}
+                    pagination={pagination}
+                />
+            </div>
+        </AdminLayout>
     );
 }
