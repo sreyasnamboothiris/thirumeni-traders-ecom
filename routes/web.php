@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TempleController;
@@ -30,9 +31,7 @@ Route::get('/ui/admin/dashboard', function () {
     return Inertia::render('Admin/AdminDashboard');
 });
 
-Route::get('/home', function () {
-    return Inertia::render('HomePage/HomeIndexPage');
-});
+Route::resource('/home', HomeController::class);
 Route::get('/ui/admin/user-management', function () {
     $userType = request('user_type');
 

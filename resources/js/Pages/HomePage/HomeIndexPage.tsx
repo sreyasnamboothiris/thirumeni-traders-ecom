@@ -5,6 +5,8 @@ import { ShoppingCart as CartIcon } from "lucide-react";
 import HomeNavBar from "@/Components/NavItems/HomeNavBar";
 import HomeFooter from "@/Components/Home/HomeFooter";
 import Shop from "@/Components/Home/Shop";
+import { Product } from "@/interfaces/data_interfaces";
+import { Paginator } from "@/ui/ui_interfaces";
 
 /* ---------------- sample products ---------------- */
 const PRODUCTS = [
@@ -38,13 +40,17 @@ const PRIMARY = "#d4a857"; // solid CTA (gold)
 const SECONDARY = "#2fe3c6"; // secondary accent (teal)
 const TEXT_PRIMARY = "#111";
 
-export default function HomeNoGradient() {
+interface Props {
+    products: Paginator<Product>;
+}
+
+export default function HomeIndexPage({ products }: Props) {
     const [language, setLanguage] = useState<"english" | "malayalam">(
         "english"
     );
     const [cart, setCart] = useState<{ productId: number; qty: number }[]>([]);
     const [cartOpen, setCartOpen] = useState(false);
-
+    console.log(products);
     useEffect(() => {
         const link = document.createElement("link");
         link.rel = "stylesheet";
@@ -97,7 +103,7 @@ export default function HomeNoGradient() {
             {/* Header */}
             <HomeNavBar />
 
-            <Shop />
+            <Shop products={products} />
 
             <HomeFooter />
         </div>
