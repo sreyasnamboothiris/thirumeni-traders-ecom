@@ -1,5 +1,7 @@
+import EditButton from "@/ui/button/EditButton";
 import Pagination from "@/ui/Pagination/Pagination";
 import { Paginator } from "@/ui/ui_interfaces";
+import { route } from "ziggy-js";
 
 export interface ListKeyMap<T> {
     key: keyof T;
@@ -22,6 +24,7 @@ export default function ListItems<T>({
     keyMap,
     pagination,
 }: ListItemsProps<T>) {
+    console.log(keyMap);
     return (
         <div className="flex flex-col gap-3">
             {items.length > 0 ? (
@@ -36,9 +39,6 @@ export default function ListItems<T>({
                         : undefined;
                     const showUrl = keyMap.showUrl
                         ? String(item[keyMap.showUrl] ?? "")
-                        : undefined;
-                    const editUrl = keyMap.editUrl
-                        ? String(item[keyMap.editUrl] ?? "")
                         : undefined;
                     const deleteUrl = keyMap.deleteUrl
                         ? String(item[keyMap.deleteUrl] ?? "")
@@ -74,13 +74,13 @@ export default function ListItems<T>({
                                         View
                                     </a>
                                 )}
-                                {editUrl && (
-                                    <a
-                                        href={editUrl}
-                                        className="text-yellow-600 hover:text-yellow-800 text-sm font-medium"
-                                    >
-                                        Edit
-                                    </a>
+                                {keyMap.editUrl && (
+                                    <EditButton
+                                        link={route(
+                                            String(keyMap.editUrl),
+                                            key
+                                        )}
+                                    />
                                 )}
                                 {deleteUrl && (
                                     <a

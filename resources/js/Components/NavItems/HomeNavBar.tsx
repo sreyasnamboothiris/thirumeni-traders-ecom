@@ -5,12 +5,14 @@ import {
     NavigationMenu,
     NavigationMenuList,
     NavigationMenuItem,
-    NavigationMenuTrigger,
-    NavigationMenuContent,
     NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { ShoppingCart as CartIcon, Link } from "lucide-react";
+import { ShoppingCart as CartIcon, Link, UserIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Button from "@/ui/button/Button";
+import { router, usePage } from "@inertiajs/react";
+import { route } from "ziggy-js";
+import { User } from "@/interfaces/data_interfaces";
 
 /* ---------------- Brand Tokens ---------------- */
 const BG_BASE = "#f6f4ef";
@@ -19,7 +21,11 @@ const PRIMARY = "#d4a857";
 const SECONDARY = "#2fe3c6";
 const TEXT_PRIMARY = "#111";
 
-export default function HomeNavBar() {
+interface Props {
+    user: User;
+}
+
+export default function HomeNavBar({ user }: Props) {
     const isMobile = useIsMobile();
     const [language, setLanguage] = useState<"english" | "malayalam">(
         "english"
@@ -163,6 +169,14 @@ export default function HomeNavBar() {
                             <CartIcon size={16} />
                             <span>0</span>
                         </button>
+                        <Button
+                            onClick={() => {
+                                console.log(user);
+                                router.visit(route("profile.show", user.id));
+                            }}
+                            label=""
+                            icon={<UserIcon size={16} />}
+                        />
                     </div>
                 </div>
             </div>

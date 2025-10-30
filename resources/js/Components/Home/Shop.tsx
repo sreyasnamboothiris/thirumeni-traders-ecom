@@ -82,6 +82,19 @@ export default function Shop({ products }: { products: Paginator<Product> }) {
                                 label="Add to Cart"
                                 variant="outline"
                                 icon={<ShoppingCart className="w-4 h-4 mr-1" />}
+                                onClick={() => {
+                                    const message = `Hi, I'm interested in buying *${
+                                        product.name
+                                    }* for ₹${
+                                        product.price_sell || "N/A"
+                                    }. Can you share more details?`;
+                                    const encodedMessage =
+                                        encodeURIComponent(message);
+                                    window.open(
+                                        `https://wa.me/918281839912?text=${encodedMessage}`,
+                                        "_blank"
+                                    );
+                                }}
                             />
                         </CardFooter>
                     </Card>

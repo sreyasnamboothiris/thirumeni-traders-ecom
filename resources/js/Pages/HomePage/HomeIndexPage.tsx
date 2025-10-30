@@ -5,30 +5,8 @@ import { ShoppingCart as CartIcon } from "lucide-react";
 import HomeNavBar from "@/Components/NavItems/HomeNavBar";
 import HomeFooter from "@/Components/Home/HomeFooter";
 import Shop from "@/Components/Home/Shop";
-import { Product } from "@/interfaces/data_interfaces";
+import { Product, User } from "@/interfaces/data_interfaces";
 import { Paginator } from "@/ui/ui_interfaces";
-
-/* ---------------- sample products ---------------- */
-const PRODUCTS = [
-    {
-        id: 1,
-        name: { english: "Brass Oil Lamp", malayalam: "പിച്ചള വിളക്ക്" },
-        price: 499,
-        image: "https://images.pexels.com/photos/6103171/pexels-photo-6103171.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    },
-    {
-        id: 2,
-        name: { english: "Ganesha Idol", malayalam: "ഗണപതി വിഗ്രഹം" },
-        price: 899,
-        image: "https://images.pexels.com/photos/28465069/pexels-photo-28465069.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    },
-    {
-        id: 3,
-        name: { english: "Incense Sticks Set", malayalam: "അഗർബത്തി സെറ്റ്" },
-        price: 299,
-        image: "https://images.pexels.com/photos/32168049/pexels-photo-32168049.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    },
-];
 
 const FONT_LINK =
     "https://fonts.googleapis.com/css2?family=Anton&family=Merriweather:wght@300;400;700&family=Montserrat:wght@300;400;600&display=swap";
@@ -42,9 +20,10 @@ const TEXT_PRIMARY = "#111";
 
 interface Props {
     products: Paginator<Product>;
+    user: User;
 }
 
-export default function HomeIndexPage({ products }: Props) {
+export default function HomeIndexPage({ products, user }: Props) {
     const [language, setLanguage] = useState<"english" | "malayalam">(
         "english"
     );
@@ -90,7 +69,7 @@ export default function HomeIndexPage({ products }: Props) {
             shopNow: "കാർട്ടിൽ ചേർക്കുക",
         },
     }[language];
-
+    console.log(user);
     return (
         <div
             style={{
@@ -101,7 +80,7 @@ export default function HomeIndexPage({ products }: Props) {
             }}
         >
             {/* Header */}
-            <HomeNavBar />
+            <HomeNavBar user={user} />
 
             <Shop products={products} />
 
