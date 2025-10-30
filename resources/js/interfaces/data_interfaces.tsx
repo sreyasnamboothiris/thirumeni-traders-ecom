@@ -38,12 +38,18 @@ export interface Product extends Model {
 export interface Customer extends Model {
     id: number;
     name: string;
+    username?: string;
+    full_name?: string;
     email: string;
     phone: string;
     address: string;
+    address_line1?: string;
+    address_line2?: string; 
     city: string;
     state: string;
     country: string;
     pincode: string;
+    delivery_instructions?: string;
     status: number;
 }
+
