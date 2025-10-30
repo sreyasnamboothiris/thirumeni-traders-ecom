@@ -32,7 +32,7 @@ Route::get('/ui/admin/dashboard', function () {
 
 Route::get('/home', function () {
     return Inertia::render('HomePage/HomeIndexPage');
-});
+})->name('home');
 Route::get('/ui/admin/user-management', function () {
     $userType = request('user_type');
 

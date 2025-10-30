@@ -9,6 +9,9 @@ import { route } from "ziggy-js";
 import { useDropzone } from "react-dropzone";
 import SelectList from "@/ui/form/SelectList";
 import { form } from "framer-motion/dist/types/client";
+import ImageDropzone from "@/ui/form/ImageDropzone";
+import { Inertia } from "@inertiajs/inertia";
+
 
 export default function ProductForm({ product }: { product?: any }) {
     const { formData, setFormValue } = useCustomForm({
@@ -29,6 +32,7 @@ export default function ProductForm({ product }: { product?: any }) {
         thumbnail_url: product?.product_thumbnail_url ?? "",
         status: product?.product_status ?? "active",
         description: product?.product_description ?? "",
+        images: product?.product_images ?? [],
         _method: product ? "PUT" : undefined,
     });
 
@@ -75,10 +79,51 @@ export default function ProductForm({ product }: { product?: any }) {
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(formData);
-        post(formData);
-    };
+    e.preventDefault();
+
+    // If you have files, send multipart/form-data
+    if (files.length > 0) {
+        const payload = new FormData();
+
+        // Append simple fields from formData
+        Object.entries(formData).forEach(([key, val]) => {
+            if (val === undefined || val === null) return;
+
+            // Don't append the `images` property from formData (we're using files[] instead)
+            if (key === "images") return;
+
+            // If value is object/array, stringify it
+            if (typeof val === "object") {
+                payload.append(key, JSON.stringify(val));
+            } else {
+                payload.append(key, String(val));
+            }
+        });
+
+        // Append files as images[]
+        files.forEach((file) => {
+            payload.append("images[]", file, file.name);
+        });
+
+        // If update, include _method
+        if (formData._method) {
+            payload.append("_method", formData._method);
+        }
+
+        // Send FormData via Inertia (do NOT set Content-Type header)
+        Inertia.post(endpoint, payload, {
+            onProgress: (progress) => {
+                // optional: progress.loaded / progress.total
+            },
+        });
+
+        return;
+    }
+
+    // No files -> fallback to JSON post
+    post(formData);
+};
+
 
     return (
         <form onSubmit={handleSubmit} className="space-y-5 text-sm">
@@ -126,43 +171,24 @@ export default function ProductForm({ product }: { product?: any }) {
             </div>
 
             {/* MEDIA */}
+            {/* MEDIA */}
             <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
-                <h3 className="font-semibold text-gray-800 mb-3">
-                    Product Images
-                </h3>
-                <div
-                    {...getRootProps()}
-                    className={`border-dashed border-2 rounded-md py-5 px-3 text-center text-gray-500 text-xs cursor-pointer ${
-                        isDragActive
-                            ? "border-indigo-300 bg-indigo-50"
-                            : "hover:border-gray-300"
-                    }`}
-                >
-                    <input {...getInputProps()} />
-                    Drag & drop or click to upload (up to 10)
-                </div>
-                <div className="mt-3 grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {previews.map((p, i) => (
-                        <div
-                            key={p.id}
-                            className="relative rounded border overflow-hidden"
-                        >
-                            <img
-                                src={p.url}
-                                className="w-full h-20 object-cover"
-                                alt={p.name}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => removeFileAt(i)}
-                                className="absolute top-1 right-1 bg-black/50 text-white text-xs rounded px-1"
-                            >
-                                ×
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                <h3 className="font-semibold text-gray-800 mb-3">Product Images</h3>
+
+                <ImageDropzone
+                    files={files}
+                    setFiles={setFiles}
+                    previews={previews}
+                    setPreviews={setPreviews}
+                    label={undefined}
+                    error={errors.images ?? null}
+                    maxFiles={10}
+                    maxSizeBytes={5 * 1024 * 1024}
+                    accept={{ "image/*": [".jpeg", ".jpg", ".png", ".webp", ".gif"] }}
+                    showHint={true}
+                />
             </div>
+
 
             {/* PRICING & INVENTORY */}
             <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">

@@ -44,6 +44,9 @@ class ProductRequest extends FormRequest
             'thumbnail_url' => ['nullable', 'url'],
             'status' => ['nullable', Rule::in(['active', 'inactive'])],
             'description' => ['nullable', 'string'],
+            'images' => ['nullable','array'],
+            'images.*' => ['file','image','max:5120'],
+
         ];
     }
 

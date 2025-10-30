@@ -7,6 +7,12 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\ProductImage;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
+
 
 class ProductController extends Controller
 {
@@ -48,13 +54,57 @@ class ProductController extends Controller
         return Inertia::render('Product/ProductCreatePage');
     }
 
-    public function store(ProductRequest $request)
+    public function store(ProductRequest $request): RedirectResponse
     {
+        // dd($request->all());
         $data = $request->validated();
 
-        $product = Product::create($data);
+        // DB::beginTransaction();
+        try {
+            // 1) create product (validated does not include uploaded files)
+            $product = Product::create($data);
 
-        return Inertia::render('Product/ProductCreatePage');
+            // 2) handle uploaded images (input name: images[])
+            if ($request->hasFile('images')) {
+                $files = $request->file('images');
+
+                foreach ($files as $index => $file) {
+                    if (! $file->isValid()) {
+                        continue;
+                    }
+
+                    // create unique filename inside products/ directory
+                    $ext = $file->getClientOriginalExtension();
+                    $filename = 'products/' . (string) Str::uuid() . '.' . $ext;
+
+                    // store file in storage/app/public/products
+                    Storage::disk('public')->putFileAs('products', $file, basename($filename));
+
+                    // create DB record
+                    ProductImage::create([
+                        'product_id'    => $product->id,
+                        'imageable_type'=> \App\Models\Product::class, // optional, keep for compatibility
+                        'image_path'    => $filename, // relative to storage/app/public
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type'     => $file->getClientMimeType(),
+                        'size'          => $file->getSize(),
+                        'is_thumbnail'  => $index === 0 ? true : false, // mark first as thumbnail
+                        'order'         => $index,
+                    ]);
+                }
+            }
+
+            // DB::commit();
+
+            return redirect()->route('product.index')->with('message', 'Product created successfully.');
+        } catch (\Throwable $e) {
+            // DB::rollBack();
+            \Log::error('Product store error: ' . $e->getMessage(), ['exception' => $e]);
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['server' => 'Unable to save product. Check logs.']);
+        }
     }
 
     public function edit(Product $product)
