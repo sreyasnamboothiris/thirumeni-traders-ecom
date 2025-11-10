@@ -17,6 +17,8 @@ export default function ProductIndexPage({
         title: "name",
         subtitle: "slug",
         description: "description",
+        editUrl: "product.edit",
+        deleteUrl: "product.destroy",
     } as const;
     console.log(products);
     return (
