@@ -26,4 +26,8 @@ class Product extends Model
         'thumbnail_url',
         'status',
     ];
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 }

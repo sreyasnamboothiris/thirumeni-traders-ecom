@@ -11,9 +11,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $products = Product::paginate(12);
+        $products = Product::with('images')->paginate(12);
         $user = Auth::user();
-
+        // dd($products->toArray());
         return Inertia::render('HomePage/HomeIndexPage', [
             'products' => $products,
             'user' => $user,
