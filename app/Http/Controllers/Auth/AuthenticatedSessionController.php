@@ -38,9 +38,9 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         // Optional: Ensure only admin or temple role can login
-        $allowedRoles = ['admin', 'temple'];
+        $allowedRoles = ['admin', 'temple','customer'];
         $roleSlug = $user->role->slug ?? null;
-
+        // dd($roleSlug);
         if (! in_array($roleSlug, $allowedRoles)) {
             Auth::logout();
 
@@ -56,6 +56,9 @@ class AuthenticatedSessionController extends Controller
 
         if ($roleSlug === 'temple') {
             return redirect()->intended(route('temple.index', absolute: false));
+        }
+         if ($roleSlug === 'customer') {
+            return redirect()->intended(route('home', absolute: false));
         }
 
         // Default fallback

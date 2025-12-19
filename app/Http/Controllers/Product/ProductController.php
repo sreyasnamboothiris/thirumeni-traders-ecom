@@ -7,6 +7,14 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\ProductImage;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Schema; 
+
+
 
 class ProductController extends Controller
 {
@@ -48,14 +56,128 @@ class ProductController extends Controller
         return Inertia::render('Product/ProductCreatePage');
     }
 
-    public function store(ProductRequest $request)
-    {
-        $data = $request->validated();
+   
 
+public function store(ProductRequest $request): RedirectResponse
+{
+    // validate & get data
+    $data = $request->validated();
+
+    DB::beginTransaction();
+    try {
+        // 1) create product
         $product = Product::create($data);
 
-        return Inertia::render('Product/ProductCreatePage');
+        $createdThumbnailPath = null;
+
+        // 2) handle explicit thumbnail upload (input 'thumbnail')
+        if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
+            $thumbFile = $request->file('thumbnail');
+            $ext = $thumbFile->getClientOriginalExtension();
+            $thumbPath = 'products/' . (string) Str::uuid() . '.' . $ext;
+
+            // store file under storage/app/public/products
+            Storage::disk('public')->putFileAs('products', $thumbFile, basename($thumbPath));
+            $createdThumbnailPath = $thumbPath;
+
+            // create db record for thumbnail
+            ProductImage::create([
+                'product_id'     => $product->id,
+                'imageable_type' => \App\Models\Product::class,
+                'image_path'     => $thumbPath,
+                'original_name'  => $thumbFile->getClientOriginalName(),
+                'mime_type'      => $thumbFile->getClientMimeType(),
+                'size'           => $thumbFile->getSize(),
+                'is_thumbnail'   => 1,
+                'order'          => 0,
+            ]);
+
+            // Optionally persist thumbnail path on product row if your schema has such a column
+            if (Schema::hasColumn('products', 'product_thumbnail_url')) {
+                $product->product_thumbnail_url = $thumbPath;
+                $product->save();
+            } elseif (Schema::hasColumn('products', 'thumbnail_url')) {
+                $product->thumbnail_url = $thumbPath;
+                $product->save();
+            }
+        }
+
+        // 3) handle gallery images (images[])
+        if ($request->hasFile('images')) {
+            $files = $request->file('images');
+
+            foreach ($files as $index => $file) {
+                if (! $file->isValid()) {
+                    continue;
+                }
+
+                $ext = $file->getClientOriginalExtension();
+                $filename = 'products/' . (string) Str::uuid() . '.' . $ext;
+                Storage::disk('public')->putFileAs('products', $file, basename($filename));
+
+                // Decide thumbnail flag:
+                // - If a dedicated thumbnail was uploaded, gallery items are NOT thumbnails.
+                // - If NO dedicated thumbnail, mark the first gallery image (index 0) as thumbnail.
+                $isThumb = $createdThumbnailPath ? 0 : ($index === 0 ? 1 : 0);
+
+                ProductImage::create([
+                    'product_id'     => $product->id,
+                    'imageable_type' => \App\Models\Product::class,
+                    'image_path'     => $filename,
+                    'original_name'  => $file->getClientOriginalName(),
+                    'mime_type'      => $file->getClientMimeType(),
+                    'size'           => $file->getSize(),
+                    'is_thumbnail'   => $isThumb,
+                    'order'          => ($createdThumbnailPath ? $index + 1 : $index),
+                ]);
+
+                if ($isThumb) {
+                    if (Schema::hasColumn('products', 'product_thumbnail_url')) {
+                        $product->product_thumbnail_url = $filename;
+                        $product->save();
+                    } elseif (Schema::hasColumn('products', 'thumbnail_url')) {
+                        $product->thumbnail_url = $filename;
+                        $product->save();
+                    }
+                }
+            }
+        }
+
+        // 4) Normalize: make sure only one image has is_thumbnail = 1
+        $thumbs = ProductImage::where('product_id', $product->id)->where('is_thumbnail', 1)->orderBy('order')->get();
+        if ($thumbs->count() > 1) {
+            $keep = $thumbs->first();
+            $others = $thumbs->slice(1);
+            foreach ($others as $other) {
+                $other->is_thumbnail = 0;
+                $other->save();
+            }
+            if ($keep) {
+                if (Schema::hasColumn('products', 'product_thumbnail_url')) {
+                    $product->product_thumbnail_url = $keep->image_path;
+                    $product->save();
+                } elseif (Schema::hasColumn('products', 'thumbnail_url')) {
+                    $product->thumbnail_url = $keep->image_path;
+                    $product->save();
+                }
+            }
+        }
+
+        DB::commit();
+
+        // Redirect to product list (HTTP 302)
+        return redirect()->route('product.index')
+            ->with('message', 'Product created successfully.');
+
+    } catch (\Throwable $e) {
+       DB::rollBack();
+
+     return redirect()->route('product.create')
+            ->withInput()
+            ->withErrors(['server' => $e->getMessage()]);
     }
+}
+
 
     public function edit(Product $product)
     {

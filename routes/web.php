@@ -29,7 +29,7 @@ Route::get('/ui/admin/dashboard', function () {
     return Inertia::render('Admin/AdminDashboard');
 });
 
-Route::resource('/home', HomeController::class);
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/ui/admin/user-management', function () {
     $userType = request('user_type');
 
