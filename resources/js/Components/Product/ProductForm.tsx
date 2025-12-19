@@ -103,29 +103,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
   // ----------------------------
   // NOTE: We delegate actual drop UI/logic to ImageDropzone (as in your setup).
   // However, if you ever handle drop here, use the createdGalleryUrlsRef to track object URLs.
-  const onGalleryDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      if (!acceptedFiles.length) return;
 
-      // limit to maxFiles if you want; ImageDropzone already does that if you pass maxFiles
-      setFiles((prev) => [...prev, ...acceptedFiles]);
-
-      const newPreviews: PreviewItem[] = acceptedFiles.map((f) => {
-        const url = URL.createObjectURL(f);
-        createdGalleryUrlsRef.current.push(url);
-
-        const id =
-          typeof crypto !== "undefined" && "randomUUID" in crypto
-            ? (crypto as any).randomUUID()
-            : `${f.name}-${f.size}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
-
-        return { id, url, name: f.name };
-      });
-
-      setPreviews((p) => [...p, ...newPreviews]);
-    },
-    [setFiles, setPreviews]
-  );
 
   // ----------------------------
   // Handlers: thumbnail single-file input
@@ -159,21 +137,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
   };
 
   // helper to remove a gallery item by index
-  const removeGalleryAt = (index: number) => {
-    setFiles((f) => f.filter((_, i) => i !== index));
-
-    // if the preview we remove was created client-side, revoke it
-    setPreviews((p) => {
-      const removed = p[index];
-      if (removed && createdGalleryUrlsRef.current.includes(removed.url)) {
-        try {
-          URL.revokeObjectURL(removed.url);
-        } catch {}
-        createdGalleryUrlsRef.current = createdGalleryUrlsRef.current.filter((u) => u !== removed.url);
-      }
-      return p.filter((_, i) => i !== index);
-    });
-  };
+ 
 
   // remove thumbnail
   const removeThumbnail = () => {
@@ -221,6 +185,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
   if (hasAnyFile) {
     const payload = new FormData();
 
+
     // Append formData fields (skip images key if present)
     Object.entries(formData).forEach(([key, val]) => {
       if (val === undefined || val === null) return;
@@ -234,6 +199,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
         payload.append(key, String(val));
       }
     });
+    
 
     // Append gallery files
     files.forEach((file) => {
@@ -249,19 +215,8 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
     if (formData._method) payload.append("_method", formData._method);
 
     // Use Inertia to post multipart data (do not set Content-Type)
-    Inertia.post(endpoint, payload, {
-      onProgress: (progress) => {
-        // optional: progress.loaded / progress.total
-      },
-      onSuccess: () => {
-        // Force a client visit to ensure URL and page update
-        Inertia.visit(route("product.index"));
-      },
-      onError: (errs) => {
-        // optional: handle client-side error UI; server validation will populate errors prop
-        console.log("submit errors", errs);
-      },
-    });
+    
+   post(formData)
 
     return;
   }
