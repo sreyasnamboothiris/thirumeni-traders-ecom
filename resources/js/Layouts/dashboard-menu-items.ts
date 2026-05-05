@@ -1,21 +1,9 @@
 import {
-    Table2,
-    Database,
-    Blocks,
-    FileJson,
-    FileCode,
-    Settings,
-    CheckSquare,
-    Users,
-    LucideIcon,
-    DatabaseIcon,
-    BookOpen,
-    Cog,
-    UserIcon,
-    User,
     BoxIcon,
+    FileCode,
+    LucideIcon,
+    UserIcon
 } from "lucide-react";
-import { route } from "ziggy-js";
 
 export interface SvgImage {
     svg: string;
@@ -46,17 +34,17 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         links: [
             {
                 title: "Customer",
-                link: "/customer",
+                link: "/customers",
                 icon: UserIcon,
             },
             {
                 title: "Temple",
-                link: "/temple",
+                link: "/temples",
                 icon: UserIcon,
             },
             {
                 title: "Shop",
-                link: "/shop",
+                link: "/shops",
                 icon: UserIcon,
             },
         ],
@@ -64,22 +52,22 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     {
         name: "Products",
         value: "products",
-        url: "/product",
+        url: "/products",
         tabDescription: "Create different type of products.",
         icon: BoxIcon,
         links: [
             {
                 title: "Create",
-                link: "/product/create",
+                link: "/products/create",
                 icon: FileCode,
             },
             {
                 title: "List",
-                link: "/product",
+                link: "/products",
                 icon: BoxIcon,
             },
         ],
-    }
+    },
 ];
 
 export default dashboardMenuItems;
