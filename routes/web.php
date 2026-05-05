@@ -17,8 +17,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('/product', ProductController::class);
-    Route::resource('/customer', CustomerController::class);
+    Route::resource('/products', ProductController::class);
+    Route::resource('/customers', CustomerController::class);
     Route::resource('/profile', ProfileController::class);
 });
 Route::resource('temple', TempleController::class);
@@ -45,4 +45,4 @@ Route::get('/ui/admin/user-management/user-create', function () {
     ]);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
