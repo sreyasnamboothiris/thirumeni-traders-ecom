@@ -8,6 +8,7 @@ import { router } from '@inertiajs/react'
 import { PlusIcon } from 'lucide-react'
 import React from 'react'
 import AddExistingUser from '../button/AddExistingUser'
+import StrongText from '@/typography/StrongText'
 
 interface Props {
   title: string
@@ -59,7 +60,7 @@ export default function CardHeader({
   return (
     <div className=''>
       <div className='flex flex-wrap items-center justify-between gap-5 py-4'>
-        <Heading className={`subheader-1stop uppercase ${titleClassName}`}>{title}</Heading>
+        <StrongText className='tt-h1'>{title}</StrongText>
         <div className='flex items-center gap-5'>
           <TooltipProvider>
             {(backUrl != null || onBackClick != null) && (

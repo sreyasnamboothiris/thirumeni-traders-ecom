@@ -18,7 +18,7 @@ export const chooseButtonColor = (type: string): [string, string] => {
   switch (type) {
     case 'primary': {
       return [
-        'rounded-lg  px-4 py-2 text-sm font-semibold text-white transition-colors bg-kseb-primary primary-button-text',
+        'rounded-lg bg-[#2c628ce6] px-4 py-2 text-sm font-semibold text-white transition-colors primary-button-text',
         '',
       ]
     }
@@ -66,7 +66,7 @@ export const chooseButtonColor = (type: string): [string, string] => {
     }
     case 'ghost': {
       return [
-        'bg-transparent border-none text-kseb-primary hover:text-kseb-primary/80 ghost-button-text' +
+        'bg-transparent border-none text-tt-primary hover:text-tt-primary/80 ghost-button-text' +
           'focus:ring-0 focus:outline-none underline-offset-2',
         '',
       ]
