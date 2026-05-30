@@ -1,7 +1,7 @@
-import React from 'react'
+import { Button } from '@/Components/ui/button'
 import { router } from '@inertiajs/react'
-import ButtonBorderIcon from './ButtonBorderIcon'
 import { Trash } from 'lucide-react'
+import React from 'react'
 
 interface Props {
   link?: string
@@ -20,8 +20,13 @@ export default function DeleteButton({ link, onClick }: Props) {
   }
 
   return (
-    <ButtonBorderIcon onClick={handleClick}>
-      <Trash className='h-6 w-6' />
-    </ButtonBorderIcon>
+    <Button
+      variant='outline'
+      size='icon'
+      className='cursor-pointer border-red-500 transition-transform hover:scale-105'
+      onClick={handleClick}
+    >
+      <Trash className='h-6 w-6 text-red-500' />
+    </Button>
   )
 }

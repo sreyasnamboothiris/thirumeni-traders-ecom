@@ -1,43 +1,32 @@
+import {
+  Table as ShadcnTable,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import React from 'react'
-import { cn } from '@/utils'
 
 export default function Table({
   children,
   heads,
   editColumn,
-  className = '',
-}: Readonly<{
+}: {
   children?: React.ReactNode
   heads: string[]
   editColumn?: boolean
-  className?: string
-}>) {
+}) {
   return (
-    <div className={cn('snap-center overflow-auto', className)}>
-      <table className='relative w-full border border-1stop-gray'>
-        <thead className='sticky top-0 bg-1stop-alt-gray'>
-          <tr className='border border-1stop-gray leading-none text-gray-700 focus:outline-none'>
-            {heads.map((head) => {
-              return (
-                <th
-                  scope='col'
-                  className='data-sm-1stop px-3 py-3 text-left font-bold'
-                  key={head}
-                >
-                  {head}
-                </th>
-              )
-            })}
-            {editColumn && (
-              <th
-                scope='col'
-                className='data-sm-1stop px-3 py-3 text-left text-1stop-dark-gray'
-              ></th>
-            )}
-          </tr>
-        </thead>
-        {children}
-      </table>
-    </div>
+    <ShadcnTable>
+      <TableHeader className='rounded-md bg-gray-50 p-3 dark:bg-gray-800'>
+        <TableRow className='text-xs font-medium text-gray-500 dark:text-gray-400'>
+          {heads.map((head) => (
+            <TableHead key={head}>{head}</TableHead>
+          ))}
+          {editColumn && <TableHead />}
+        </TableRow>
+      </TableHeader>
+      <TableBody>{children}</TableBody>
+    </ShadcnTable>
   )
 }

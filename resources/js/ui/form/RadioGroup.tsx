@@ -41,7 +41,7 @@ export default function RadioGroup<
   return (
     <div className='flex flex-col gap-1'>
       {label != null && showLabel && <label className='standard-label small-1stop'>{label}</label>}
-      <div className='flex flex-col gap-2'>
+      <div className='flex-col-4 flex gap-2'>
         {list.map((item: T) => (
           <label
             className='flex cursor-pointer items-center gap-2'

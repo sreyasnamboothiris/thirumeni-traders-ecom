@@ -2,6 +2,456 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@plugin 'tailwindcss-animate';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+
+/* Floating calendar */
+.react-datepicker-popper {
+  z-index: 50;
+}
+
+/* Calendar container */
+.react-datepicker {
+  border-radius: 0.75rem;
+  border: 1px solid var(--kseb-line);
+  box-shadow: 0 12px 30px var(--kseb-bg-blue);
+  font-size: 0.875rem;
+}
+
+/* Header */
+.react-datepicker__header {
+  background-color: #ffffff;
+  border-bottom: none;
+  padding-top: 0.5rem;
+}
+
+/* Month label */
+.react-datepicker__current-month {
+  font-weight: 600;
+  color: var(--kseb-primary);
+}
+
+/* Day cells */
+.react-datepicker__day {
+  border-radius: 0.375rem;
+}
+
+/* Selected day */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Hover */
+.react-datepicker__day:hover {
+  background-color: #eef2ff;
+}
+
+/* Highlight line circle spinner */
+
+.highlight-spinner {
+  overflow: visible;
+}
+
+.highlight-spinner-track {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 6;
+  opacity: 0.15;
+}
+
+.highlight-spinner-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 60 220;
+  animation: highlight-move 1.4s ease-in-out infinite;
+}
+
+@keyframes highlight-move {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -280;
+  }
+}
+
+/* Self-hosted Inter variable fonts (normal + italic). Place files in public/fonts/inter/. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/Inter/web/InterVariable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/Inter/web/InterVariable-Italic.woff2') format('woff2');
+}
+
+@theme {
+  /* Primary UI font stack updated to Inter (design spec). Keep Instrument Sans as fallback for now until fully removed. */
+  --font-sans:
+    'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Custom colors */
+  --color-dark-gray: #252c32;
+  --color-deep-green: #1c6534;
+
+   --color-kseb-primary: var(--kseb-primary);
+   --color-kseb-bg-blue: var(--kseb-bg-blue);
+   --color-kseb-line: var(--kseb-line);
+   --color-tab-border:var(--tab-border)
+   --color-kseb-highlight:var(--kseb-highlight)
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.87 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.87 0 0);
+   --kseb-primary: #1A3B64;
+   --kseb-bg-blue:#F3F8FE;
+   --kseb-line:#DCDADA;
+   --tab-border:#A8A8A8;
+   --kseb-highlight:#387feb;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+   --kseb-primary: #1A3B64;
+   --kseb-bg-blue: #F3F8FE;
+   --kseb-line:#DCDADA;
+   --tab-border:#A8A8A8;
+   --kseb-highlight:#387feb;
+
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/*
+  ---break---
+*/
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+
+.normal-font {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  line-height: 40px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #000000;
+}
+
+
+.kseb-h1{
+  font-family: 'Geist', sans-serif;
+  font-size:36px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #000000;
+  
+}
+
+.kseb-paragraph{
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.context-menu-title{
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  line-height: 24px;
+  font-weight: 300;
+}
+
+
+.context-menu-subtitle{
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.context-menu-item{
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+  color: #7C7C7C;
+}
+
+.ghost-button-text {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 400;       
+  line-height: normal;  
+  letter-spacing: 0;
+  color: #000000;
+}
+
+.link-button-text{
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  font-weight: 400;       
+  line-height: normal;  
+  letter-spacing: 0;
+  color: #1A3B64;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.delete-link{
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  font-weight: 400;       
+  line-height: normal;  
+  letter-spacing: 0;
+  color: #e20909;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.primary-button-text{
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 300;       
+  line-height: normal;  
+  letter-spacing: 0;
+  color: #FFFFFF;
+}
+
+.kseb-description {
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: #000000;
+}
+
+
+.label-text {
+  font-family: 'Geist', sans-serif;
+  font-weight: 300;      /* Light */
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: #333333;
+}
+
+.value-text-semibold{
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; 
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  color: #000000;
+}
+
+.highlighted-amount {
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;      /* Medium */
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: #000000;
+}
+
+.semi-highlighted-amount {
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;      /* Medium */
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: #000000;
+}
+
+.heading-amount{
+ font-family: 'Geist', sans-serif;
+font-weight: 800; /* Medium */
+font-size: 24px;
+line-height: 28px;
+letter-spacing: 0%;
+color: #000000;
+}
+/*
+  ---break---
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
