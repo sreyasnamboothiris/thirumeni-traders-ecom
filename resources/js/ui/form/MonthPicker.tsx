@@ -1,26 +1,63 @@
 import React from 'react'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import { Input as ShadcnInput } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
+import ErrorText from '@/typography/ErrorText'
+import { FormFieldProp } from '../ui_interfaces'
 
-interface Props {
-  selectedMonth: Date | null
-  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+interface MonthPickerProp {
+  label?: string
+  value: string
+  error?: string
+  setValue: (value: string) => void
+  placeholder?: string
+  min?: string // format: YYYY-MM
+  max?: string // format: YYYY-MM
+  disabled?: boolean
+  required?: boolean
+  className?: string
 }
 
-const MonthPicker = ({ selectedMonth, setSelectedMonth }: Props) => {
+export default function MonthPicker({
+  label,
+  value,
+  error,
+  setValue,
+  placeholder,
+  min,
+  max,
+  disabled = false,
+  required = false,
+  className = '',
+}: Readonly<MonthPickerProp>) {
+  const figmaInputClasses = cn(
+    'w-full bg-white px-3 py-2 rounded border border-gray-200 text-sm font-normal text-black',
+    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#0078d4] focus-visible:border-kseb-primary',
+    'disabled:bg-gray-50 disabled:text-black disabled:cursor-not-allowed disabled:opacity-100',
+    'placeholder:text-gray-400',
+    className
+  )
+
   return (
-    <div>
-      <DatePicker
-        selected={selectedMonth}
-        onChange={(date) => setSelectedMonth(date)}
-        dateFormat='MMM yyyy'
-        showMonthYearPicker
-        todayButton='This Month'
-        className='small-1stop-header border-none bg-transparent text-center focus:ring-0'
-        calendarClassName='month-picker-calendar'
+    <div className='space-y-1'>
+      {label != null && (
+        <label className='text-sm leading-6 font-normal text-[#252c32]'>
+          {required ? `${label} *` : label}
+        </label>
+      )}
+
+      <ShadcnInput
+        type='month'
+        value={value}
+        min={min ?? undefined}
+        max={max ?? undefined}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
+        className={figmaInputClasses}
+        disabled={disabled}
+        required={required}
       />
+
+      {error && <ErrorText>{error}</ErrorText>}
     </div>
   )
 }
-
-export default MonthPicker

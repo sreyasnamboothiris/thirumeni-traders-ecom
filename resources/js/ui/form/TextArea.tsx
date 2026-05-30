@@ -1,32 +1,45 @@
-import React from "react";
-import { FormFieldProp } from "../ui_interfaces";
-import { getFormStyle } from "./Input";
-import ErrorText from "@/typography/ErrorText";
-import { div } from "framer-motion/dist/types/client";
+import { FormFieldProp } from '../ui_interfaces'
+import ErrorText from '@/typography/ErrorText'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
 
 export default function TextArea({
-    label,
-    value,
-    error,
-    setValue,
-    placeholder,
-    disabled,
-    style = "normal",
-}: FormFieldProp) {
-    return (
-        <div className="flex flex-col">
-            <label className="small-1stop mb-1 text-sm tracking-normal text-gray-800">
-                {label}
-            </label>
-            <textarea
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder={placeholder}
-                name="description"
-                disabled={disabled}
-                className={getFormStyle(style)}
-            ></textarea>
-            {error && <ErrorText>{error}</ErrorText>}
-        </div>
-    );
+  label,
+  value,
+  error,
+  rows,
+  maxLength,
+  setValue,
+  placeholder,
+  disabled = false,
+  className = '',
+}: FormFieldProp & { className?: string; rows?: number; maxLength?: number }) {
+  // Figma-based styling as default - clean white background with subtle border
+  const figmaTextareaClasses = cn(
+    'w-full bg-white px-3 py-2 rounded border border-gray-200 text-sm font-normal text-black min-h-[80px]',
+    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#0078d4] focus-visible:border-[#0078d4]',
+    'disabled:bg-gray-50 disabled:text-black disabled:cursor-not-allowed disabled:opacity-100',
+    'placeholder:text-gray-400 resize-y',
+    className
+  )
+
+  return (
+    <div className='space-y-1'>
+      {label != null && (
+        <label className='text-sm leading-6 font-normal text-[#252c32]'>{label}</label>
+      )}
+
+      <Textarea
+        value={String(value || '')}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
+        disabled={disabled}
+        className={figmaTextareaClasses}
+        rows={rows}
+        maxLength={maxLength}
+      />
+
+      {error && <ErrorText>{error}</ErrorText>}
+    </div>
+  )
 }

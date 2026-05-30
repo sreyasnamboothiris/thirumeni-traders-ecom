@@ -1,12 +1,40 @@
-import React from 'react'
-import { FormFieldProp } from '../ui_interfaces'
+import ErrorText from '@/typography/ErrorText'
+import dayjs from 'dayjs'
+import { useMemo } from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
-interface DatePickerProp extends FormFieldProp {
+interface DatePickerProp {
+  value: string | null | undefined
+  label?: string
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel'
+  error?: string
+  styles?: string
+  placeholder?: string
+  setValue: (value: string) => unknown
+  disabled?: boolean
+  readonly?: boolean
+  isDate?: boolean
+  isTime?: boolean
+  preventFormSubmit?: boolean
+  style?: string
+  required?: boolean
+  formatter?: (value: string) => string
+  showClearButton?: boolean
   min?: string
   max?: string
+  className?: string
 }
 
-export default function DatePicker({
+const convertToDate = (dateString: string | undefined | null): Date | null => {
+  if (dateString == null || dateString === '') {
+    return null
+  }
+  const parsed = dayjs(dateString, 'YYYY-MM-DD', true)
+  return parsed.isValid() ? parsed.toDate() : null
+}
+
+export default function Datepicker({
   label,
   value,
   error,
@@ -15,23 +43,39 @@ export default function DatePicker({
   min,
   max,
   disabled = false,
-}: DatePickerProp) {
+  required,
+}: Readonly<DatePickerProp>) {
+  const { dateObject, minDate, maxDate } = useMemo(() => {
+    return {
+      dateObject: convertToDate(value),
+      minDate: convertToDate(min),
+      maxDate: convertToDate(max),
+    }
+  }, [value, min, max])
+
+  const formatForDB = (date: Date): string => {
+    return dayjs(date).format('YYYY-MM-DD')
+  }
+
   return (
-    <>
-      <label className='small-1stop-header mb-1 leading-tight tracking-normal text-gray-800'>
-        {label}
-      </label>
-      <input
-        type='date'
-        value={value}
-        min={min}
-        max={max}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
-        className='small-1stop-header date-picker-input rounded border border-gray-300 bg-transparent px-3 py-3 text-gray-800 shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100'
+    <div className='flex flex-col'>
+      {label != null && (
+        <label className='text-sm leading-6 font-normal text-[#252c32]'>
+          {required ? `${label} *` : label}
+        </label>
+      )}
+
+      <DatePicker
+        selected={dateObject}
+        onChange={(date: Date | null) => setValue(date ? formatForDB(date) : '')}
+        placeholderText={placeholder ?? 'dd/mm/yyyy'}
+        minDate={minDate ?? undefined}
+        maxDate={maxDate ?? undefined}
         disabled={disabled}
+        dateFormat='dd/MM/yyyy'
+        className='rounded border p-1.5'
       />
-      {error && <div className='error-text'>{error}</div>}
-    </>
+      {error && <ErrorText>{error}</ErrorText>}
+    </div>
   )
 }

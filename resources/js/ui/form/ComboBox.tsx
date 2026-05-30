@@ -4,9 +4,10 @@ import SubHeading from '@/typography/SubHeading'
 import axios from 'axios'
 import { XIcon } from 'lucide-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import useClick from '../../hooks/useClick'
+import useClick from '../../../../../kseb-mbc-staff-portal/resources/js/hooks/useClick'
 import { handleHttpErrors } from '../alerts'
-import { getFormStyle } from './Input'
+import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
 interface Properties<
   K extends keyof T,
@@ -15,6 +16,7 @@ interface Properties<
   V extends number | string | null,
   T extends Record<K, U> & Record<G, V>,
 > {
+  required?: boolean
   label?: string
   error?: string
   disabled?: boolean
@@ -28,6 +30,7 @@ interface Properties<
   linkText?: string
   redirectLink?: string
   placeholder?: string
+  className?: string
 }
 
 const ComboBox = <
@@ -38,6 +41,7 @@ const ComboBox = <
   T extends Record<K, U> & Record<G, V>,
 >({
   label,
+  required,
   value,
   error,
   setValue,
@@ -49,6 +53,7 @@ const ComboBox = <
   linkText,
   redirectLink,
   placeholder,
+  className,
 }: Properties<K, G, U, V, T>) => {
   const [textFieldValue, setTextFieldValue] = useState<string>('')
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
@@ -87,6 +92,7 @@ const ComboBox = <
   const handleSelection = (item: T | null) => {
     setValue(item)
     setList([])
+    setHighlightedIndex(-1)
   }
 
   // navigate through list with arrow keys
@@ -135,12 +141,13 @@ const ComboBox = <
               <button
                 className='cursor-pointer rounded-full p-1 hover:bg-gray-50'
                 onClick={() => handleSelection(null)}
+                type='button'
               >
                 <XIcon />
               </button>
             )}
           </div>
-          {error != null && <div className='error-text'>{error}</div>}
+          {error != null && <ErrorText>{error}</ErrorText>}
         </div>
       )}
       {value == null && (
@@ -150,9 +157,10 @@ const ComboBox = <
         >
           <div className='flex flex-col'>
             <div className='flex justify-between'>
-              {label != null && (
-                <label className='small-1stop mb-1 tracking-normal text-gray-800'>{label}</label>
-              )}
+              <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>
+                {required ? `${label} *` : label}
+              </label>
+
               <a
                 className={`link small-1stop flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
                 href={redirectLink ?? ''}
@@ -162,40 +170,41 @@ const ComboBox = <
                 {linkText}
               </a>
             </div>
-            <input
+            <Input
               type='text'
               value={textFieldValue}
               onKeyDown={handleKeydown}
               placeholder={placeholder}
               onChange={(event) => setTextFieldValue(event.target.value)}
-              className={getFormStyle('normal')}
+              className={cn(
+                'w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm font-normal text-black',
+                'focus-visible:border-[#0078d4] focus-visible:ring-1 focus-visible:ring-[#0078d4] focus-visible:outline-none',
+                'disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-black disabled:opacity-100',
+                'placeholder:text-gray-400',
+                className
+              )}
               disabled={disabled}
               readOnly={disabled}
             />
             {error && <ErrorText>{error}</ErrorText>}
           </div>
-          <div className='absolute top-full z-10 w-full overflow-auto rounded bg-white shadow-xl'>
-            {list.length > 0 && (
-              <>
-                {list.map((item, index) => {
-                  return (
-                    <div
-                      key={item[dataKey]}
-                      className={`flex cursor-pointer flex-col px-2 py-3 text-sm ${highlightedIndex === index ? 'subheader-sm-1stop bg-gray-200' : ''}`}
-                      onClick={() => handleSelection(item)}
-                      onMouseEnter={() => setHighlightedIndex(index)}
-                    >
-                      <SubHeading>{item[displayKey]}</SubHeading>
-                      {displayValue2 != null && (
-                        <NormalText className='text-xs text-gray-500'>
-                          {item[displayValue2]}
-                        </NormalText>
-                      )}
-                    </div>
-                  )
-                })}
-              </>
-            )}
+          <div className='absolute top-full z-10 max-h-60 w-full overflow-y-auto rounded-sm bg-white shadow-xl'>
+            {list.length > 0 &&
+              list.map((item, index) => (
+                <div
+                  key={`${item[dataKey]}-${index}`}
+                  className={`flex cursor-pointer flex-col px-2 py-3 text-sm ${
+                    highlightedIndex === index ? 'subheader-sm-1stop bg-gray-200' : ''
+                  }`}
+                  onClick={() => handleSelection(item)}
+                  onMouseEnter={() => setHighlightedIndex(index)}
+                >
+                  <SubHeading>{item[displayKey]}</SubHeading>
+                  {displayValue2 != null && (
+                    <NormalText className='text-xs text-gray-500'>{item[displayValue2]}</NormalText>
+                  )}
+                </div>
+              ))}
           </div>
         </div>
       )}

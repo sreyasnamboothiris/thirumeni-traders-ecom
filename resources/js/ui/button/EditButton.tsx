@@ -1,7 +1,7 @@
-import React from 'react'
+import { Button } from '@/Components/ui/button'
 import { router } from '@inertiajs/react'
-import ButtonBorderIcon from './ButtonBorderIcon'
-import { Pencil } from 'lucide-react'
+import { EditIcon } from 'lucide-react'
+import React from 'react'
 
 interface Props {
   link?: string
@@ -20,8 +20,12 @@ export default function EditButton({ link, onClick }: Props) {
   }
 
   return (
-    <ButtonBorderIcon onClick={handleClick}>
-      <Pencil className='h-6 w-6' />
-    </ButtonBorderIcon>
+    <Button
+      className='border-kseb-primary flex cursor-pointer items-center gap-2 border-b-2 transition-transform hover:border-blue-500'
+      onClick={handleClick}
+      variant='outline'
+    >
+      <EditIcon className='h-6 w-6' />
+    </Button>
   )
 }

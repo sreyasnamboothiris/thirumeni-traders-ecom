@@ -1,7 +1,7 @@
-import React from 'react'
-import Button from '../button/Button'
-import Modal from './Modal'
+import { Button } from '@/components/ui/button'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import React from 'react'
+import Modal from './Modal'
 
 interface Properties {
   setShowModal: (show: boolean) => any
@@ -44,11 +44,11 @@ export default function DeleteModal({
         {children}
         <div className='flex w-full justify-end'>
           <Button
-            label='DELETE'
             onClick={onDelete}
-            processing={loading}
-            variant='danger'
-          />
+            variant='destructive'
+          >
+            DELETE
+          </Button>
         </div>
       </div>
     </Modal>
