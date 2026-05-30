@@ -1,6 +1,6 @@
 import { FormFieldProp } from '../ui_interfaces'
 import ErrorText from '@/typography/ErrorText'
-import { Textarea } from '@/components/ui/textarea'
+import { Textarea } from '@/Components/ui/textarea'
 import { cn } from '@/lib/utils'
 
 export default function TextArea({

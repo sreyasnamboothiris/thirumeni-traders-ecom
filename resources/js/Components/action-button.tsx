@@ -31,7 +31,7 @@ const ActionButton = ({ onEdit, onDownload, onDelete, onReprioritize, onInactiva
     >
       <button
         onClick={() => setOpen((p) => !p)}
-        className='hover:border-kseb-primary hover:bg-kseb-bg-blue cursor-pointer rounded-md border border-transparent p-2 text-gray-600'
+        className='hover:border-tt-primary hover:bg-tt-bg-blue cursor-pointer rounded-md border border-transparent p-2 text-gray-600'
       >
         <MoreVertical className='h-5 w-5' />
       </button>
@@ -44,7 +44,7 @@ const ActionButton = ({ onEdit, onDownload, onDelete, onReprioritize, onInactiva
                 setOpen(false)
                 onEdit()
               }}
-              className='context-menu-item hover:bg-kseb-primary hover:border-kseb-line flex w-full items-center gap-2 px-4 py-2'
+              className='context-menu-item hover:tt-kseb-primary hover:border-kseb-line flex w-full items-center gap-2 px-4 py-2'
             >
               <Edit className='h-4 w-4' />
               Edit
