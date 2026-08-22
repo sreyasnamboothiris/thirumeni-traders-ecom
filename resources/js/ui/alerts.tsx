@@ -5,7 +5,6 @@ export function showSuccess(message?: string | null): void {
     return
   }
   toast.success(message, {
-    position: 'bottom-center',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -21,7 +20,21 @@ export function showError(message?: string | null): void {
     return
   }
   toast.error(message, {
-    position: 'bottom-center',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: 'dark',
+  })
+}
+
+export function showInfo(message?: string | null): void {
+  if (message == null) {
+    return
+  }
+  toast.info(message, {
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,

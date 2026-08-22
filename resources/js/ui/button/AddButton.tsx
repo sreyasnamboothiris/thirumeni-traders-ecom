@@ -1,7 +1,7 @@
-import React from 'react'
+import { Button } from '@/Components/ui/button'
 import { router } from '@inertiajs/react'
-import ButtonBorderIcon from './ButtonBorderIcon'
 import { PlusIcon } from 'lucide-react'
+import React from 'react'
 
 interface Props {
   link?: string
@@ -9,7 +9,7 @@ interface Props {
   buttonText?: string
 }
 
-export default function AddButton({ link, onClick, buttonText }: Props) {
+export default function AddButton({ link, onClick, buttonText }: Readonly<Props>) {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (link != null) {
       router.get(link)
@@ -21,11 +21,15 @@ export default function AddButton({ link, onClick, buttonText }: Props) {
   }
 
   return (
-    <ButtonBorderIcon onClick={handleClick}>
-      <div className='body-1stop flex flex-col items-center'>
-        <PlusIcon className='h-6 w-6' />
-        {buttonText}
-      </div>
-    </ButtonBorderIcon>
+    <Button
+      variant='outline'
+      size='default'
+      className='border-kseb-primary hoborder-kseb-primary flex cursor-pointer items-center gap-2 border-b-2 transition-transform'
+      onClick={handleClick}
+      type='button'
+    >
+      <PlusIcon className='h-6 w-6 stroke-[2.5]' />
+      {buttonText}
+    </Button>
   )
 }

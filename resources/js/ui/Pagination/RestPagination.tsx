@@ -78,7 +78,7 @@ export default function RestPagination<T>({ pagination, onNewPage }: PaginationP
                         strokeLinejoin='round'
                       />
                     </svg>
-                    <p className='small-1stop ml-2 mr-4'>Previous</p>
+                    <p className='small-1stop mr-4 ml-2'>Previous</p>
                   </div>
                 )}
                 {index !== 0 && index !== pagination.links.length - 1 && (

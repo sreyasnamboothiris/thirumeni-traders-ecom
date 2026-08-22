@@ -6,7 +6,7 @@ import {
     NavigationMenuList,
     NavigationMenuItem,
     NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
+} from "@/Components/ui/navigation-menu";
 import { ShoppingCart as CartIcon, Link, UserIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Button from "@/ui/button/Button";

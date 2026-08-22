@@ -3,7 +3,8 @@ import useInertiaPost from "@/hooks/useInertiaPost";
 import ErrorText from "@/typography/ErrorText";
 import Button from "@/ui/button/Button";
 import CardHeader from "@/ui/Card/CardHeader";
-import ImageDropzone, { PreviewItem } from "@/ui/form/ImageDropzone";
+import ImageDropzone from "@/ui/form/ImageDropZone";
+
 import Input from "@/ui/form/Input";
 import SelectList from "@/ui/form/SelectList";
 import TextArea from "@/ui/form/TextArea";
@@ -234,11 +235,9 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5 text-sm">
-            <CardHeader title={product ? "Edit Product" : "Create Product"} />
-
+        <form onSubmit={handleSubmit} className="">
             {/* BASIC */}
-            <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+            <div className="bg-gray-100 rounded-md shadow-sm border border-gray-500 p-4">
                 <h3 className="font-semibold text-gray-800 mb-3">
                     Basic Details
                 </h3>
@@ -281,7 +280,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
             </div>
 
             {/* MEDIA */}
-            <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+            <div className="bg-gray-100 rounded-md shadow-sm border border-gray-500 p-4">
                 <h3 className="font-semibold text-gray-800 mb-3">
                     Product Images
                 </h3>
@@ -362,7 +361,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
             </div>
 
             {/* PRICING & INVENTORY */}
-            <div className="bg-white rounded-md shadow-sm border border-gray-100 p-4">
+            <div className="bg-gray-100 rounded-md shadow-sm border border-gray-500 p-4">
                 <h3 className="font-semibold text-gray-800 mb-3">
                     Pricing & Inventory
                 </h3>
@@ -466,11 +465,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
                 >
                     Cancel
                 </button>
-                <Button
-                    type="submit"
-                    label={loading ? "Saving..." : "Save"}
-                    disabled={loading}
-                />
+                <Button type="submit" variant="primary" label="Save" />
             </div>
         </form>
     );

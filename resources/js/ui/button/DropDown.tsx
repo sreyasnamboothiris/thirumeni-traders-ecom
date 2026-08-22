@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { FormFieldProp } from '../ui_interfaces'
-import useClick from '../../hooks/useClick'
+import useClick from '../../../../../kseb-mbc-staff-portal/resources/js/hooks/useClick'
 import { ChevronsUpDownIcon } from 'lucide-react'
 
 export interface Props<K extends keyof T, U extends number | string, T extends Record<K, U>>
@@ -67,7 +67,7 @@ export default function Dropdown<
       >
         <button
           onClick={toggleList}
-          className='flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-3 text-sm text-gray-800 shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100'
+          className='flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-3 text-sm text-gray-800 shadow-xs focus:border-indigo-700 focus:outline-hidden disabled:bg-gray-100'
         >
           <span>
             {value === '' && showAllOption
@@ -79,7 +79,7 @@ export default function Dropdown<
           <ChevronsUpDownIcon className='h-6 w-6' />
         </button>
         {showList && (
-          <div className='absolute top-full z-10 w-full rounded-b bg-white shadow'>
+          <div className='absolute top-full z-10 w-full rounded-b bg-white shadow-sm'>
             {showAllOption && (
               <div
                 className='flex cursor-pointer flex-wrap p-2 text-sm hover:bg-gray-200 hover:font-semibold'

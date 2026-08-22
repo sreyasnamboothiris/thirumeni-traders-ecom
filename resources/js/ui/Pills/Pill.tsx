@@ -19,7 +19,7 @@ const pillStyle = (type: string) => {
       return 'bg-yellow-500 text-white'
     }
     default: {
-      return 'bg-primary-500 text-white'
+      return 'bg-primary-500'
     }
   }
 }
@@ -36,7 +36,7 @@ const Pill = ({ value, onClose, type = 'white' }: Properties) => {
         <>
           <span>&nbsp;&nbsp;&nbsp;</span>
           <span
-            className='cursor-pointer hover:font-h2-1stop'
+            className='hover:font-h2-1stop cursor-pointer'
             onClick={onClose}
           >
             x

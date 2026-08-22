@@ -1,3 +1,4 @@
+import { Button } from '@/Components/ui/button'
 import React, { useMemo } from 'react'
 
 export const chooseBorderButtonColor = (type: string): [string, string] => {
@@ -29,6 +30,13 @@ export const chooseBorderButtonColor = (type: string): [string, string] => {
       return [
         'bg-transparent border-red-500 text-red-500 hover:bg-red-500 hover:text-white',
         'text-red-500',
+      ]
+    }
+    case 'highlight': {
+      return [
+        `text-primary-700 bg-transparent border-primary-700 focus:ring-primary-700 focus:ring-offset-1 
+         hover:bg-1stop-highlight hover:text-white transition duration-150 ease-in-out`,
+        'text-primary-700',
       ]
     }
 
@@ -66,7 +74,7 @@ const ButtonBorderIcon = ({
           type='button'
           onClick={onClick}
           disabled={disabled}
-          className={`flex items-center justify-center rounded-lg border px-2 py-2 text-left text-sm tracking-wider ring-offset-2 transition duration-150 ease-in-out focus:outline-none focus:ring-1 ${buttonStyle}`}
+          className={`flex items-center justify-center rounded-lg border px-2 py-2 text-left text-sm tracking-wider ring-offset-2 transition duration-150 ease-in-out focus:ring-1 focus:outline-hidden ${buttonStyle}`}
         >
           {children}
         </button>
