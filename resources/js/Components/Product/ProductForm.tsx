@@ -236,8 +236,6 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
 
     return (
         <form onSubmit={handleSubmit} className="">
-           
-
             {/* BASIC */}
             <div className="bg-gray-100 rounded-md shadow-sm border border-gray-500 p-4">
                 <h3 className="font-semibold text-gray-800 mb-3">
@@ -467,12 +465,7 @@ export default function ProductForm({ product }: { product?: ProductProp }) {
                 >
                     Cancel
                 </button>
-                <Button
-                    type="submit"
-                    variant="primary"
-                    label="Save"
-                   
-                />
+                <Button type="submit" variant="primary" label="Save" />
             </div>
         </form>
     );
